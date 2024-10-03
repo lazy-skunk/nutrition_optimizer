@@ -1,5 +1,5 @@
 __pycache__
 .mypy_cache
-.vscode
+.pytest_cache
 data
-my_venv
+.coverage

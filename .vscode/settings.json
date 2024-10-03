@@ -1,0 +1,37 @@
+{
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        },
+        "editor.formatOnSave": true
+    },
+    "python.defaultInterpreterPath": "usr/local/bin/python",
+    "python.testing.pytestEnabled": true,
+    "mypy-type-checker.args": [
+        "--config-file=pyproject.toml"
+    ],
+    "black-formatter.args": [
+        "--config=pyproject.toml"
+    ],
+    "flake8.args": [
+        "--max-line-length=79",
+        "--extend-ignore=E203", // Ignored due to false positive.
+        "--max-complexity=7", // The number of objects an average human can hold in short-term memory is 7 ± 2.
+    ],
+    "isort.args": [
+        "--settings-path=pyproject.toml"
+    ],
+}
