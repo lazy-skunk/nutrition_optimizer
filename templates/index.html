@@ -12,12 +12,13 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <script defer src="{{ url_for('static', filename='main.js') }}"></script>
   </head>
   <body>
     <div class="container">
       <h1 class="mt-5">栄養素データベース</h1>
 
-      <div class="form-group row">
+      <div class="row">
         <div class="col-md-8">
           <input
             type="text"
@@ -26,6 +27,7 @@
             placeholder="食品名で検索"
           />
         </div>
+
         <div class="col-md-2">
           <button id="searchButton" type="button" class="btn btn-primary">
             検索
@@ -63,6 +65,5 @@
         >）を加工して作成
       </p>
     </div>
-    <script defer src="{{ url_for('static', filename='main.js') }}"></script>
   </body>
 </html>
