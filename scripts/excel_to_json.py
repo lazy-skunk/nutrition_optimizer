@@ -1,5 +1,8 @@
 import pandas as pd
 
+_EXCEL_FILE_PATH = "data/minimal.xlsx"
+_JSON_FILE_PATH = "static/nutrition_data.json"
+
 
 def excel_to_json(excel_file_path: str, json_file_path: str) -> None:
     df = pd.read_excel(excel_file_path)
@@ -11,7 +14,4 @@ def excel_to_json(excel_file_path: str, json_file_path: str) -> None:
 
 
 if __name__ == "__main__":
-    _EXCEL_FILE_PATH = "data/minimal.xlsx"
-    _JSON_FILE_PATH = "static/nutrition_data.json"
-
     excel_to_json(_EXCEL_FILE_PATH, _JSON_FILE_PATH)
