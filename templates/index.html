@@ -12,7 +12,11 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
-    <script defer src="{{ url_for('static', filename='main.js') }}"></script>
+    <script
+      defer
+      type="module"
+      src="{{ url_for('static', filename='main.js') }}"
+    ></script>
   </head>
   <body>
     <div class="container">
@@ -36,22 +40,9 @@
       </div>
 
       <table id="nutritionTable" class="table table-striped">
-        <thead class="thead-dark">
-          <tr>
-            <th>食品名</th>
-            <th>熱量(kcal)</th>
-            <th>タンパク質(g)</th>
-            <th>脂質(g)</th>
-            <th>食物繊維(g)</th>
-            <th>炭水化物(g)</th>
-          </tr>
-        </thead>
-        <tbody id="nutritionTableBody">
-          <!-- データは JavaScript で動的に挿入 -->
-        </tbody>
+        <thead id="nutritionTableHeader" class="thead-dark"></thead>
+        <tbody id="nutritionTableBody"></tbody>
       </table>
-
-      <div id="pagination" class="mt-3"></div>
 
       <p>
         出典：日本食品標準成分表（八訂）増補2023年 （文部科学省）（
