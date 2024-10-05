@@ -12,6 +12,15 @@ document.addEventListener("DOMContentLoaded", function () {
   nutritionTableManager.initialize(NUTRITION_DATA_URL);
 
   document
+    .getElementById("searchInput")
+    .addEventListener("keyup", function (event) {
+      if (event.key === "Enter") {
+        const keyword = document.getElementById("searchInput").value;
+        nutritionTableManager.filterTable(keyword);
+      }
+    });
+
+  document
     .getElementById("searchButton")
     .addEventListener("click", function () {
       const keyword = document.getElementById("searchInput").value;
