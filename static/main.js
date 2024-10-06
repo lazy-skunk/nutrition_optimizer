@@ -1,22 +1,30 @@
-import { NutritionTableManager } from "./nutrition_table_manager.js";
+import { NutritionInfoModel } from "./nutrition_info_model.js";
+import { NutritionInfoView } from "./nutrition_info_view.js";
+import { NutritionInfoController } from "./nutrition_info_controller.js";
 
-document.addEventListener("DOMContentLoaded", function () {
-  const tableHeaderId = "nutritionTableHeader";
-  const tableBodyId = "nutritionTableBody";
-  const nutritionTableManager = new NutritionTableManager(
-    tableHeaderId,
-    tableBodyId
+document.addEventListener("DOMContentLoaded", async function () {
+  const TABLE_HEADER_ID = "nutritionTableHeader";
+  const ABLE_BODY_ID = "nutritionTableBody";
+
+  const nutrition_info_model = new NutritionInfoModel();
+  const nutrition_info_view = new NutritionInfoView(
+    TABLE_HEADER_ID,
+    ABLE_BODY_ID
+  );
+  const controller = new NutritionInfoController(
+    nutrition_info_model,
+    nutrition_info_view
   );
 
   const NUTRITION_DATA_URL = "static/nutrition_data.json";
-  nutritionTableManager.initialize(NUTRITION_DATA_URL);
+  await controller.initialize(NUTRITION_DATA_URL);
 
   document
     .getElementById("searchInput")
     .addEventListener("keyup", function (event) {
       if (event.key === "Enter") {
         const keyword = document.getElementById("searchInput").value;
-        nutritionTableManager.filterTable(keyword);
+        controller.filterTable(keyword);
       }
     });
 
@@ -24,6 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
     .getElementById("searchButton")
     .addEventListener("click", function () {
       const keyword = document.getElementById("searchInput").value;
-      nutritionTableManager.filterTable(keyword);
+      controller.filterTable(keyword);
     });
 });
