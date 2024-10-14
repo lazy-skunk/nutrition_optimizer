@@ -29,9 +29,9 @@ export class NutritionInfoView {
     const headerRow = document.createElement("tr");
 
     headers.forEach((header) => {
-      const th = document.createElement("th");
-      th.textContent = header;
-      headerRow.appendChild(th);
+      const headerCell = document.createElement("th");
+      headerCell.textContent = header;
+      headerRow.appendChild(headerCell);
     });
 
     tableHeader.appendChild(headerRow);
