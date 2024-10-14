@@ -74,13 +74,13 @@ export class NutritionInfoView {
     }
 
     if (totalPages > maxButtons && this.#currentPage > 1) {
-      const firstPageLi = this.#createPageButton("<< 先頭", 1, data);
+      const firstPageLi = this.#createPageButton("<< 先頭へ", 1, data);
       pagination.appendChild(firstPageLi);
     }
 
     if (this.#currentPage > 1) {
       const prevLi = this.#createPageButton(
-        "前へ",
+        "< 前へ",
         this.#currentPage - 1,
         data
       );
@@ -105,7 +105,7 @@ export class NutritionInfoView {
     }
 
     if (totalPages > maxButtons && this.#currentPage < totalPages) {
-      const lastPageLi = this.#createPageButton("末尾 >>", totalPages, data);
+      const lastPageLi = this.#createPageButton("末尾へ >>", totalPages, data);
       pagination.appendChild(lastPageLi);
     }
   }
