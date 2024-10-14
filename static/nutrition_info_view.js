@@ -55,15 +55,18 @@ export class NutritionInfoView {
   setupPagination(data) {
     const totalRows = data.length;
     const totalPages = Math.ceil(totalRows / this.#rowsPerPage);
-    const paginationElement = document.getElementById("pagination");
-    paginationElement.innerHTML = "";
+    const pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
 
     const maxButtons = 10;
     const halfMax = Math.floor(maxButtons / 2);
     let startPage = Math.max(1, this.#currentPage - halfMax);
     let endPage = Math.min(totalPages, startPage + maxButtons - 1);
 
-    if (totalPages > maxButtons) {
+    if (totalPages <= maxButtons) {
+      startPage = 1;
+      endPage = totalPages;
+    } else {
       if (this.#currentPage <= halfMax) {
         endPage = maxButtons;
       } else if (this.#currentPage + halfMax >= totalPages) {
@@ -73,7 +76,7 @@ export class NutritionInfoView {
 
     if (totalPages > maxButtons && this.#currentPage > 1) {
       const firstPageLi = this.#createPageButton("<< 先頭", 1, data);
-      paginationElement.appendChild(firstPageLi);
+      pagination.appendChild(firstPageLi);
     }
 
     if (this.#currentPage > 1) {
@@ -82,7 +85,7 @@ export class NutritionInfoView {
         this.#currentPage - 1,
         data
       );
-      paginationElement.appendChild(prevLi);
+      pagination.appendChild(prevLi);
     }
 
     for (let i = startPage; i <= endPage; i++) {
@@ -90,7 +93,7 @@ export class NutritionInfoView {
       if (i === this.#currentPage) {
         li.classList.add("active");
       }
-      paginationElement.appendChild(li);
+      pagination.appendChild(li);
     }
 
     if (this.#currentPage < totalPages) {
@@ -99,12 +102,12 @@ export class NutritionInfoView {
         this.#currentPage + 1,
         data
       );
-      paginationElement.appendChild(nextLi);
+      pagination.appendChild(nextLi);
     }
 
     if (totalPages > maxButtons && this.#currentPage < totalPages) {
       const lastPageLi = this.#createPageButton("末尾 >>", totalPages, data);
-      paginationElement.appendChild(lastPageLi);
+      pagination.appendChild(lastPageLi);
     }
   }
 
