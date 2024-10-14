@@ -42,13 +42,13 @@ export class NutritionInfoView {
     tableBody.innerHTML = "";
 
     rows.forEach((rowData) => {
-      const tr = document.createElement("tr");
+      const tableRow = document.createElement("tr");
       rowData.forEach((cell) => {
-        const td = document.createElement("td");
-        td.textContent = cell;
-        tr.appendChild(td);
+        const tableData = document.createElement("td");
+        tableData.textContent = cell;
+        tableRow.appendChild(tableData);
       });
-      tableBody.appendChild(tr);
+      tableBody.appendChild(tableRow);
     });
   }
 
