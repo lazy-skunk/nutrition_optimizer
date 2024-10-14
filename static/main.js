@@ -3,14 +3,15 @@ import { NutritionInfoView } from "./nutrition_info_view.js";
 import { NutritionInfoController } from "./nutrition_info_controller.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
-  const TABLE_HEADER_ID = "nutritionTableHeader";
-  const ABLE_BODY_ID = "nutritionTableBody";
-
   const nutrition_info_model = new NutritionInfoModel();
+
+  const TABLE_HEADER_ID = "nutritionTableHeader";
+  const TABLE_BODY_ID = "nutritionTableBody";
   const nutrition_info_view = new NutritionInfoView(
     TABLE_HEADER_ID,
-    ABLE_BODY_ID
+    TABLE_BODY_ID
   );
+
   const controller = new NutritionInfoController(
     nutrition_info_model,
     nutrition_info_view

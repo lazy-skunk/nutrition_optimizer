@@ -118,8 +118,8 @@ export class NutritionInfoView {
     a.textContent = text;
     a.href = "#";
 
-    a.addEventListener("click", (e) => {
-      e.preventDefault();
+    a.addEventListener("click", (event) => {
+      event.preventDefault();
       this.#currentPage = pageNumber;
       this.#renderPage(pageNumber, data);
     });
