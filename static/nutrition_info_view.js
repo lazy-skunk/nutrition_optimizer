@@ -65,7 +65,6 @@ export class NutritionInfoView {
 
     if (totalPages <= maxButtons) {
       startPage = 1;
-      endPage = totalPages;
     } else {
       if (this.#currentPage <= halfMax) {
         endPage = maxButtons;
@@ -123,7 +122,6 @@ export class NutritionInfoView {
       e.preventDefault();
       this.#currentPage = pageNumber;
       this.#renderPage(pageNumber, data);
-      this.setupPagination(data);
     });
 
     li.appendChild(a);
