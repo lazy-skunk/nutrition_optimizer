@@ -28,12 +28,15 @@ export class NutritionInfoView {
     tableHeader.innerHTML = "";
     const headerRow = document.createElement("tr");
 
+    const fragment = document.createDocumentFragment();
+
     headers.forEach((header) => {
       const headerCell = document.createElement("th");
       headerCell.textContent = header;
-      headerRow.appendChild(headerCell);
+      fragment.appendChild(headerCell);
     });
 
+    headerRow.appendChild(fragment);
     tableHeader.appendChild(headerRow);
   }
 
