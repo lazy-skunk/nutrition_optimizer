@@ -73,9 +73,11 @@ export class NutritionInfoView {
       }
     }
 
+    const fragment = document.createDocumentFragment();
+
     if (totalPages > maxButtons && this.#currentPage > 1) {
       const firstPageLi = this.#createPageButton("<< 先頭へ", 1, data);
-      pagination.appendChild(firstPageLi);
+      fragment.appendChild(firstPageLi);
     }
 
     if (this.#currentPage > 1) {
@@ -84,7 +86,7 @@ export class NutritionInfoView {
         this.#currentPage - 1,
         data
       );
-      pagination.appendChild(prevLi);
+      fragment.appendChild(prevLi);
     }
 
     for (let i = startPage; i <= endPage; i++) {
@@ -92,7 +94,7 @@ export class NutritionInfoView {
       if (i === this.#currentPage) {
         li.classList.add("active");
       }
-      pagination.appendChild(li);
+      fragment.appendChild(li);
     }
 
     if (this.#currentPage < totalPages) {
@@ -101,13 +103,15 @@ export class NutritionInfoView {
         this.#currentPage + 1,
         data
       );
-      pagination.appendChild(nextLi);
+      fragment.appendChild(nextLi);
     }
 
     if (totalPages > maxButtons && this.#currentPage < totalPages) {
       const lastPageLi = this.#createPageButton("末尾へ >>", totalPages, data);
-      pagination.appendChild(lastPageLi);
+      fragment.appendChild(lastPageLi);
     }
+
+    pagination.appendChild(fragment);
   }
 
   #createPageButton(text, pageNumber, data) {
