@@ -65,24 +65,28 @@ export class NutritionInfoView {
     const pagination = document.getElementById("pagination");
     pagination.innerHTML = "";
 
-    const maxButtons = 10;
-    const halfMax = Math.floor(maxButtons / 2);
+    const MAX_BUTTONS = 10;
+    const halfMax = Math.floor(MAX_BUTTONS / 2);
     let startPage = Math.max(1, this.#currentPage - halfMax);
-    let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+    let endPage = Math.min(totalPages, startPage + MAX_BUTTONS - 1);
 
-    if (totalPages <= maxButtons) {
+    if (totalPages <= MAX_BUTTONS) {
       startPage = 1;
     } else {
       if (this.#currentPage <= halfMax) {
-        endPage = maxButtons;
+        endPage = MAX_BUTTONS;
       } else if (this.#currentPage + halfMax >= totalPages) {
-        startPage = totalPages - maxButtons + 1;
+        startPage = totalPages - MAX_BUTTONS + 1;
       }
     }
 
     const fragment = document.createDocumentFragment();
 
-    if (totalPages > maxButtons && this.#currentPage > 1) {
+    const SHOW_FIRST_PAGE_BUTTON_THRESHOLD = 6;
+    if (
+      totalPages > MAX_BUTTONS &&
+      this.#currentPage > SHOW_FIRST_PAGE_BUTTON_THRESHOLD
+    ) {
       const firstPageLi = this.#createPageButton("<< 先頭へ", 1, data);
       fragment.appendChild(firstPageLi);
     }
@@ -113,7 +117,11 @@ export class NutritionInfoView {
       fragment.appendChild(nextLi);
     }
 
-    if (totalPages > maxButtons && this.#currentPage < totalPages) {
+    const SHOW_LAST_PAGE_BUTTON_THRESHOLD = totalPages - 4;
+    if (
+      totalPages > MAX_BUTTONS &&
+      this.#currentPage < SHOW_LAST_PAGE_BUTTON_THRESHOLD
+    ) {
       const lastPageLi = this.#createPageButton("末尾へ >>", totalPages, data);
       fragment.appendChild(lastPageLi);
     }
