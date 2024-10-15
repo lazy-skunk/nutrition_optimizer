@@ -41,6 +41,8 @@ export class NutritionInfoView {
     const tableBody = document.getElementById(this.#tableBodyId);
     tableBody.innerHTML = "";
 
+    const fragment = document.createDocumentFragment();
+
     rows.forEach((rowData) => {
       const tableRow = document.createElement("tr");
       rowData.forEach((cell) => {
@@ -48,8 +50,10 @@ export class NutritionInfoView {
         tableData.textContent = cell;
         tableRow.appendChild(tableData);
       });
-      tableBody.appendChild(tableRow);
+      fragment.appendChild(tableRow);
     });
+
+    tableBody.appendChild(fragment);
   }
 
   setupPagination(data) {
