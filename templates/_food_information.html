@@ -1,0 +1,355 @@
+<h2>Food Information</h2>
+<table class="table table-bordered table-striped" id="food-table">
+  <thead class="table-dark">
+    <tr>
+      <th scope="col">Food Name</th>
+      <th scope="col">Minimum Intake (g)</th>
+      <th scope="col">Maximum Intake (g)</th>
+      <th scope="col">Energy (kcal/100g)</th>
+      <th scope="col">Protein (g/100g)</th>
+      <th scope="col">Fat (g/100g)</th>
+      <th scope="col">Carbohydrates (g/100g)</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody id="food-inputs">
+    <!-- <tr>
+      <td>
+        <input type="text" class="form-control" name="food-name" />
+      </td>
+      <td>
+        <input type="number" class="form-control" name="food-minimum-intake" />
+      </td>
+      <td>
+        <input type="number" class="form-control" name="food-maximum-intake" />
+      </td>
+      <td>
+        <input type="number" class="form-control" name="food-energy" />
+      </td>
+      <td>
+        <input type="number" class="form-control" name="food-protein" />
+      </td>
+      <td>
+        <input type="number" class="form-control" name="food-fat" />
+      </td>
+      <td>
+        <input type="number" class="form-control" name="food-carbohydrates" />
+      </td>
+      <td class="no-action"></td>
+      <td></td>
+    </tr> -->
+    <tr>
+      <td>
+        <input type="text" class="form-control" name="food-name" value="rice" />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-minimum-intake"
+          value="200"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-maximum-intake"
+          value="800"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-energy"
+          value="152"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-protein"
+          value="2.8"
+        />
+      </td>
+      <td>
+        <input type="number" class="form-control" name="food-fat" value="1" />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-carbohydrates"
+          value="35.6"
+        />
+      </td>
+      <td class="no-action"></td>
+    </tr>
+    <tr>
+      <td>
+        <input
+          type="text"
+          class="form-control"
+          name="food-name"
+          value="chicken_fillet"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-minimum-intake"
+          value="150"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-maximum-intake"
+          value="300"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-energy"
+          value="121"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-protein"
+          value="29.6"
+        />
+      </td>
+      <td>
+        <input type="number" class="form-control" name="food-fat" value="1" />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-carbohydrates"
+          value="0"
+        />
+      </td>
+      <td class="no-action"></td>
+    </tr>
+    <tr>
+      <td>
+        <input
+          type="text"
+          class="form-control"
+          name="food-name"
+          value="boiled_egg"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-minimum-intake"
+          value="150"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-maximum-intake"
+          value="200"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-energy"
+          value="134"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-protein"
+          value="12.5"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-fat"
+          value="10.4"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-carbohydrates"
+          value="0.3"
+        />
+      </td>
+      <td class="no-action"></td>
+    </tr>
+    <tr>
+      <td>
+        <input
+          type="text"
+          class="form-control"
+          name="food-name"
+          value="broccoli"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-minimum-intake"
+          value="45"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-maximum-intake"
+          value="90"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-energy"
+          value="30"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-protein"
+          value="3.9"
+        />
+      </td>
+      <td>
+        <input type="number" class="form-control" name="food-fat" value="0.4" />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-carbohydrates"
+          value="5.2"
+        />
+      </td>
+      <td class="no-action"></td>
+    </tr>
+    <tr>
+      <td>
+        <input
+          type="text"
+          class="form-control"
+          name="food-name"
+          value="xplosion"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-minimum-intake"
+          value="90"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-maximum-intake"
+          value="120"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-energy"
+          value="386"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-protein"
+          value="70.1"
+        />
+      </td>
+      <td>
+        <input type="number" class="form-control" name="food-fat" value="6.4" />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-carbohydrates"
+          value="14.6"
+        />
+      </td>
+      <td class="no-action"></td>
+    </tr>
+  </tbody>
+</table>
+
+<button
+  type="button"
+  class="btn btn-outline-primary"
+  onclick="addItem('food-template', 'food-inputs');"
+>
+  Add Food
+</button>
+
+<template id="food-template">
+  <tr>
+    <td>
+      <input type="text" class="form-control" name="food-name" />
+    </td>
+    <td>
+      <input type="number" class="form-control" name="food-minimum-intake" />
+    </td>
+    <td>
+      <input type="number" class="form-control" name="food-maximum-intake" />
+    </td>
+    <td>
+      <input type="number" class="form-control" name="food-energy" />
+    </td>
+    <td>
+      <input type="number" class="form-control" name="food-protein" />
+    </td>
+    <td>
+      <input type="number" class="form-control" name="food-fat" />
+    </td>
+    <td>
+      <input type="number" class="form-control" name="food-carbohydrates" />
+    </td>
+    <td>
+      <button
+        type="button"
+        class="btn btn-outline-danger"
+        onclick="removeItem(this)"
+      >
+        Remove
+      </button>
+    </td>
+  </tr>
+</template>

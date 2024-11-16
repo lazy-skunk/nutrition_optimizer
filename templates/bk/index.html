@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nutrients Calculator</title>
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+      type="image/x-icon"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script
+      defer
+      type="module"
+      src="{{ url_for('static', filename='main.js') }}"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mt-5">栄養素データベース</h1>
+
+      <div class="row">
+        <div class="col-md-8">
+          <input
+            type="text"
+            id="searchInput"
+            class="form-control"
+            placeholder="食品名で検索"
+          />
+        </div>
+
+        <div class="col-md-2">
+          <button id="searchButton" type="button" class="btn btn-primary">
+            検索
+          </button>
+        </div>
+      </div>
+
+      <table id="nutritionTable" class="table table-striped">
+        <thead id="nutritionTableHeader" class="thead-dark"></thead>
+        <tbody id="nutritionTableBody"></tbody>
+      </table>
+
+      <ul id="pagination" class="pagination"></ul>
+
+      <p>
+        出典：日本食品標準成分表（八訂）増補2023年 （文部科学省）（
+        <a href="https://www.mext.go.jp/a_menu/syokuhinseibun/mext_00001.html"
+          >https://www.mext.go.jp/a_menu/syokuhinseibun/mext_00001.html</a
+        >）<br />
+        出典：・第2章（データ） (Excel:1.9MB) （文部科学省）（
+        <a
+          href="https://www.mext.go.jp/content/20230428-mxt_kagsei-mext_00001_012.xlsx"
+          >https://www.mext.go.jp/content/20230428-mxt_kagsei-mext_00001_012.xlsx</a
+        >）を加工して作成
+      </p>
+    </div>
+  </body>
+</html>

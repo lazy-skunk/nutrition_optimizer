@@ -1,0 +1,8 @@
+.no-action {
+  background-image: linear-gradient(
+    to right top,
+    transparent 0% 49%,
+    #888888 50%,
+    transparent 51% 100%
+  );
+}
