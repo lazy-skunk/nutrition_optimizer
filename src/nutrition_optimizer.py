@@ -29,7 +29,7 @@ class NutritionOptimizer:
         self.total_fat: int = 0
         self.total_carbohydrates: int = 0
 
-    def _initialize_lp_variables(self) -> None:
+    def _setup_lp_variables(self) -> None:
         for food_item in self.foods:
             self.lp_variables[food_item.name] = LpVariable(
                 food_item.name,
@@ -38,7 +38,7 @@ class NutritionOptimizer:
                 cat="Integer",
             )
 
-    def _initialize_lp_problem(self) -> None:
+    def _setup_lp_problem(self) -> None:
         problem = self.objective.problem
         nutrientional_component = self.objective.nutritional_component
 
@@ -63,7 +63,7 @@ class NutritionOptimizer:
 
         self.problem += (target, f"{problem}_{nutrientional_component}")
 
-    def _initialize_objective_variables(self) -> None:
+    def _setup_objective_variables(self) -> None:
         for food_item in self.foods:
             self.total_energy += (
                 food_item.energy
@@ -98,7 +98,7 @@ class NutritionOptimizer:
                 / self._GRAM_CALCULATION_FACTOR
             )
 
-    def _add_constraint_to_problem(self) -> None:
+    def _setup_constraints(self) -> None:
         # TODO: この辺がなんか長い。細分化したい。
         for constraint in self.constraints:
             nutritional_component = constraint.nutritional_component
@@ -170,11 +170,11 @@ class NutritionOptimizer:
                 raise ValueError(f"Unknown unit: {unit}")
 
     def solve(self) -> None:
-        self._initialize_lp_variables()
-        self._initialize_objective_variables()
-        self._initialize_lp_problem()
+        self._setup_lp_variables()
+        self._setup_objective_variables()
+        self._setup_lp_problem()
+        self._setup_constraints()
 
-        self._add_constraint_to_problem()
         self.problem.solve()
 
         if LpStatus[self.problem.status] == "Optimal":

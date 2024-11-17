@@ -1,5 +1,5 @@
 from flask import Flask, Response, jsonify, render_template, request
-from pulp import LpMaximize, LpMinimize, LpProblem, LpStatus
+from pulp import LpStatus
 
 from src.constraint import Constraint
 from src.food_information import FoodInformation
@@ -55,15 +55,9 @@ def optimize() -> Response:
         nutrition_optimizer = NutritionOptimizer(
             food_information_list, objective, constraint_list
         )
-        nutrition_optimizer._initialize_lp_variables()
-        nutrition_optimizer._initialize_objective_variables()
-        nutrition_optimizer._initialize_lp_problem()
-        nutrition_optimizer._add_constraint_to_problem()
+        nutrition_optimizer.solve()
 
         print("TODO: 工事中 イマココ")
-
-        nutrition_optimizer.problem.solve()
-
         if LpStatus[nutrition_optimizer.problem.status] == "Optimal":
             result = {
                 food: f"{nutrition_optimizer.lp_variables[food].varValue}g"
