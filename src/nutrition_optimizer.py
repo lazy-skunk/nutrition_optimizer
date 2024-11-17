@@ -23,17 +23,13 @@ class NutritionOptimizer:
             "制約に基づきカロリーを最大化", sense=LpMaximize
         )
 
-        # この辺は配列か辞書にまとめて簡単にしたいかも。
+        # TODO: この辺は配列か辞書にまとめて簡単にしたいかも。
         self.total_energy: int = 0
         self.total_protein: int = 0
         self.total_fat: int = 0
         self.total_carbohydrates: int = 0
 
-        self._setup_variables()
-        self._define_problem()
-        self._calculate_total_nutrients()
-
-    def _setup_variables(self) -> None:
+    def _initialize_lp_variables(self) -> None:
         for food_item in self.foods:
             self.lp_variables[food_item.name] = LpVariable(
                 food_item.name,
@@ -42,60 +38,143 @@ class NutritionOptimizer:
                 cat="Integer",
             )
 
-    def _define_problem(self) -> None:
-        if self.objective.problem == "minimize":
-            self.problem = LpProblem(
-                f"minimize_{self.objective.nutritional_component}",
-                LpMinimize,
-            )
+    def _initialize_lp_problem(self) -> None:
+        problem = self.objective.problem
+        nutrientional_component = self.objective.nutritional_component
+
+        problem_type = LpMinimize if problem == "minimize" else LpMaximize
+
+        self.problem = LpProblem(
+            f"{problem}_{nutrientional_component}", problem_type
+        )
+
+        if nutrientional_component == "energy":
+            target = self.total_energy
+        elif nutrientional_component == "protein":
+            target = self.total_protein
+        elif nutrientional_component == "fat":
+            target = self.total_fat
+        elif nutrientional_component == "carbohydrates":
+            target = self.total_carbohydrates
         else:
-            self.problem = LpProblem(
-                f"maximize_{self.objective.nutritional_component}",
-                LpMaximize,
+            raise ValueError(
+                f"Unknown nutritional component: {nutrientional_component}"
             )
 
-    def _calculate_total_nutrients(self) -> None:
-        # TODO: 1個当たりのグラム数は画面から入力できるようにしたい。
-        GRAMS_PER_UNIT = 1
+        self.problem += (target, f"{problem}_{nutrientional_component}")
+
+    def _initialize_objective_variables(self) -> None:
         for food_item in self.foods:
             self.total_energy += (
                 food_item.energy
-                * (GRAMS_PER_UNIT * self.lp_variables[food_item.name])
+                * (
+                    food_item.grams_per_unit
+                    * self.lp_variables[food_item.name]
+                )
                 / self._GRAM_CALCULATION_FACTOR
             )
             self.total_protein += (
                 food_item.protein
-                * (GRAMS_PER_UNIT * self.lp_variables[food_item.name])
+                * (
+                    food_item.grams_per_unit
+                    * self.lp_variables[food_item.name]
+                )
                 / self._GRAM_CALCULATION_FACTOR
             )
             self.total_fat += (
                 food_item.fat
-                * (GRAMS_PER_UNIT * self.lp_variables[food_item.name])
+                * (
+                    food_item.grams_per_unit
+                    * self.lp_variables[food_item.name]
+                )
                 / self._GRAM_CALCULATION_FACTOR
             )
             self.total_carbohydrates += (
                 food_item.carbohydrates
-                * (GRAMS_PER_UNIT * self.lp_variables[food_item.name])
+                * (
+                    food_item.grams_per_unit
+                    * self.lp_variables[food_item.name]
+                )
                 / self._GRAM_CALCULATION_FACTOR
             )
 
-    def add_constraints(self) -> None:
-        self._calculate_total_nutrients()
+    def _add_constraint_to_problem(self) -> None:
+        # TODO: この辺がなんか長い。細分化したい。
+        for constraint in self.constraints:
+            nutritional_component = constraint.nutritional_component
+            min_max = constraint.min_max
+            value = constraint.value
+            unit = constraint.unit
 
-        self.problem += self.total_energy, "カロリーの最大化"
-        self.problem += self.total_energy <= 1700, "カロリーの上限"
-        # self.problem += self.total_protein <= 160, "たんぱく質のグラム数上限"
-        # self.problem += self.total_protein >= 150, "たんぱく質のグラム数下限"
+            if nutritional_component == "energy":
+                nutrient_value = self.total_energy
+            elif nutritional_component == "protein":
+                nutrient_value = self.total_protein
+            elif nutritional_component == "fat":
+                nutrient_value = self.total_fat
+            elif nutritional_component == "carbohydrates":
+                nutrient_value = self.total_carbohydrates
+            else:
+                raise ValueError(
+                    f"Unknown nutritional component: {nutritional_component}"
+                )
+            # TODO: 画面側の表現を普通の単位に変えたいかも。Amount(g) とかじゃなくて g だけの方が直感的かも。
+            if unit == "amount" or unit == "energy":
+                if min_max == "max":
+                    self.problem += (
+                        nutrient_value <= value,
+                        # TODO: とりあえず固定値にしているけど、全体的に動的にしたいかも。
+                        f"Max_{nutritional_component.capitalize()}_Amount",
+                    )
+                elif min_max == "min":
+                    self.problem += (
+                        nutrient_value >= value,
+                        f"Min_{nutritional_component.capitalize()}_Amount",
+                    )
 
-        # MAX_FAT_RATIO = 0.3  # 20%
-        # self.problem += (
-        #     self.total_fat * 9 <= self.total_kcal * MAX_FAT_RATIO,
-        #     "脂質の割合制限",
-        # )
+            elif unit == "ratio":
+                if nutritional_component == "fat":
+                    total_fat_energy = (
+                        self.total_fat * FoodInformation.FAT_ENERGY_PER_GRAM
+                    )
+                    if min_max == "max":
+                        self.problem += (
+                            total_fat_energy
+                            <= self.total_energy
+                            * (value / self._GRAM_CALCULATION_FACTOR),
+                            f"Max_{nutritional_component.capitalize()}_Ratio",
+                        )
+                    elif min_max == "min":
+                        self.problem += (
+                            total_fat_energy
+                            >= self.total_energy
+                            * (value / self._GRAM_CALCULATION_FACTOR),
+                            f"Min_{nutritional_component.capitalize()}_Ratio",
+                        )
+                else:
+                    if min_max == "max":
+                        self.problem += (
+                            nutrient_value
+                            <= self.total_energy
+                            * (value / self._GRAM_CALCULATION_FACTOR),
+                            f"Max_{nutritional_component.capitalize()}_Ratio",
+                        )
+                    elif min_max == "min":
+                        self.problem += (
+                            nutrient_value
+                            >= self.total_energy
+                            * (value / self._GRAM_CALCULATION_FACTOR),
+                            f"Min_{nutritional_component.capitalize()}_Ratio",
+                        )
+            else:
+                raise ValueError(f"Unknown unit: {unit}")
 
     def solve(self) -> None:
-        self._setup_variables()
-        self.add_constraints()
+        self._initialize_lp_variables()
+        self._initialize_objective_variables()
+        self._initialize_lp_problem()
+
+        self._add_constraint_to_problem()
         self.problem.solve()
 
         if LpStatus[self.problem.status] == "Optimal":
@@ -117,17 +196,19 @@ class NutritionOptimizer:
             protein_ratio = (
                 (self.total_protein * PROTEIN_KCAL_PER_GRAM)
                 / total_energy
-                * 100
+                * self._GRAM_CALCULATION_FACTOR
             )
 
             fat_ratio = (
-                (self.total_fat * FAT_KCAL_PER_GRAM) / total_energy * 100
+                (self.total_fat * FAT_KCAL_PER_GRAM)
+                / total_energy
+                * self._GRAM_CALCULATION_FACTOR
             )
 
             carbohydrate_ratio = (
                 (self.total_carbohydrates * CARBOHYDRATE_KCAL_PER_GRAM)
                 / total_energy
-                * 100
+                * self._GRAM_CALCULATION_FACTOR
             )
 
             print("### PFCバランス")

@@ -8,9 +8,10 @@ class FoodInformation:
     protein: float
     fat: float
     carbohydrates: float
-    # grams_per_unit: int
     minimum_intake: int
     maximum_intake: int
+    # TODO: 1個当たりのグラム数は画面から入力できるように調整すること。
+    grams_per_unit: int = 1
 
     PROTEIN_ENERGY_PER_GRAM = 4
     FAT_ENERGY_PER_GRAM = 9

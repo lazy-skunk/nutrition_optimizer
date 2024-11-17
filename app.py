@@ -1,5 +1,5 @@
 from flask import Flask, Response, jsonify, render_template, request
-from pulp import LpMaximize, LpMinimize, LpProblem, LpStatus, LpVariable
+from pulp import LpMaximize, LpMinimize, LpProblem, LpStatus
 
 from src.constraint import Constraint
 from src.food_information import FoodInformation
@@ -18,6 +18,7 @@ def index() -> str:
 @app.route("/optimize", methods=["POST"])
 def optimize() -> Response:
     try:
+        # TODO: リクエストの扱いを改善したい。
         if request is None or request.json is None:
             return jsonify({"status": "InvalidRequest", "result": {}})
 
@@ -54,70 +55,16 @@ def optimize() -> Response:
         nutrition_optimizer = NutritionOptimizer(
             food_information_list, objective, constraint_list
         )
+        nutrition_optimizer._initialize_lp_variables()
+        nutrition_optimizer._initialize_objective_variables()
+        nutrition_optimizer._initialize_lp_problem()
+        nutrition_optimizer._add_constraint_to_problem()
 
-        # TODO: lp_variables を消してもいいかの判断をしてもいいかな。
-        print("breakpoint 用")
+        print("TODO: 工事中 イマココ")
 
-        if objective_json["problem"] == "minimize":
-            problem = LpProblem(
-                f"minimize_{objective_json['nutritionalComponent']}",
-                LpMinimize,
-            )
-        else:
-            problem = LpProblem(
-                f"maximize_{objective_json['nutritionalComponent']}",
-                LpMaximize,
-            )
+        nutrition_optimizer.problem.solve()
 
-        problem += nutrition_optimizer.total_energy, "Maximize_Energy"
-
-        for constraint in constraints:
-            if (
-                constraint["nutritionalComponent"] == "energy"
-                and constraint["minMax"] == "max"
-            ):
-                problem += (
-                    nutrition_optimizer.total_energy <= constraint["value"],
-                    "Max_Energy",
-                )
-                continue
-
-            if (
-                constraint["nutritionalComponent"] == "protein"
-                and constraint["minMax"] == "max"
-            ):
-                problem += (
-                    nutrition_optimizer.total_protein <= constraint["value"],
-                    "Max_Protein",
-                )
-                continue
-
-            if (
-                constraint["nutritionalComponent"] == "protein"
-                and constraint["minMax"] == "min"
-            ):
-                problem += (
-                    nutrition_optimizer.total_protein >= constraint["value"],
-                    "Min_Protein",
-                )
-                continue
-
-            if (
-                constraint["nutritionalComponent"] == "fat"
-                and constraint["minMax"] == "max"
-            ):
-                total_fat_energy = nutrition_optimizer.total_fat * 9
-                problem += (
-                    total_fat_energy
-                    <= nutrition_optimizer.total_energy
-                    * (constraint["value"] / 100),
-                    "Max_Fat",
-                )
-                continue
-
-        problem.solve()
-
-        if LpStatus[problem.status] == "Optimal":
+        if LpStatus[nutrition_optimizer.problem.status] == "Optimal":
             result = {
                 food: f"{nutrition_optimizer.lp_variables[food].varValue}g"
                 for food in nutrition_optimizer.lp_variables
