@@ -169,52 +169,78 @@ class NutritionOptimizer:
             else:
                 raise ValueError(f"Unknown unit: {unit}")
 
-    def solve(self) -> None:
+    def solve(self) -> dict:
         self._setup_lp_variables()
         self._setup_objective_variables()
         self._setup_lp_problem()
         self._setup_constraints()
-
         self.problem.solve()
 
         if LpStatus[self.problem.status] == "Optimal":
-            print("最適解が見つかりました。")
-            for food in self.lp_variables.keys():
-                print(f"{food}: {self.lp_variables[food].varValue}")
+            result = {
+                food: f"{self.lp_variables[food].varValue}g"
+                for food in self.lp_variables
+            }
 
-            print("###")
-            print(f"総たんぱく質: {self.total_protein:.1f} g")
-            print(f"総脂質: {self.total_fat:.1f} g")
-            print(f"総炭水化物: {self.total_carbohydrates:.1f} g")
-            print(f"総カロリー: {self.total_energy:.1f} kcal")
+            total_protein_value = sum(
+                self.lp_variables[food].varValue * item.protein
+                for food, item in zip(
+                    self.lp_variables.keys(),
+                    self.foods,
+                )
+            )
 
-            total_energy = self.total_energy
-            PROTEIN_KCAL_PER_GRAM = 4
-            FAT_KCAL_PER_GRAM = 9
-            CARBOHYDRATE_KCAL_PER_GRAM = 4
+            total_fat_value = sum(
+                self.lp_variables[food].varValue * item.fat
+                for food, item in zip(
+                    self.lp_variables.keys(),
+                    self.foods,
+                )
+            )
+
+            total_carbohydrate_value = sum(
+                self.lp_variables[food].varValue * item.carbohydrates
+                for food, item in zip(
+                    self.lp_variables.keys(),
+                    self.foods,
+                )
+            )
+
+            total_kcal_value = (
+                total_protein_value * FoodInformation.PROTEIN_ENERGY_PER_GRAM
+                + total_fat_value * FoodInformation.FAT_ENERGY_PER_GRAM
+                + total_carbohydrate_value
+                * FoodInformation.CARBOHYDRATES_ENERGY_PER_GRAM
+            )
 
             protein_ratio = (
-                (self.total_protein * PROTEIN_KCAL_PER_GRAM)
-                / total_energy
-                * self._GRAM_CALCULATION_FACTOR
-            )
+                total_protein_value
+                * FoodInformation.PROTEIN_ENERGY_PER_GRAM
+                / total_kcal_value
+            ) * self._GRAM_CALCULATION_FACTOR
 
             fat_ratio = (
-                (self.total_fat * FAT_KCAL_PER_GRAM)
-                / total_energy
-                * self._GRAM_CALCULATION_FACTOR
-            )
+                total_fat_value
+                * FoodInformation.FAT_ENERGY_PER_GRAM
+                / total_kcal_value
+            ) * self._GRAM_CALCULATION_FACTOR
 
             carbohydrate_ratio = (
-                (self.total_carbohydrates * CARBOHYDRATE_KCAL_PER_GRAM)
-                / total_energy
-                * self._GRAM_CALCULATION_FACTOR
-            )
+                total_carbohydrate_value
+                * FoodInformation.CARBOHYDRATES_ENERGY_PER_GRAM
+                / total_kcal_value
+            ) * self._GRAM_CALCULATION_FACTOR
 
-            print("### PFCバランス")
-            print(f"たんぱく質割合: {protein_ratio:.1f}%")
-            print(f"脂質割合: {fat_ratio:.1f}%")
-            print(f"炭水化物割合: {carbohydrate_ratio:.1f}%")
+            pfc_ratio = {
+                "protein_ratio": f"{protein_ratio:.1f}%",
+                "fat_ratio": f"{fat_ratio:.1f}%",
+                "carbohydrate_ratio": f"{carbohydrate_ratio:.1f}%",
+            }
 
+            return {
+                "status": "Optimal",
+                "result": result,
+                "pfc_ratio": pfc_ratio,
+            }
         else:
-            print("最適解が見つかりませんでした。")
+            return {"status": "Infeasible", "result": {}}
