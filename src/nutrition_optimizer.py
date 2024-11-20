@@ -118,18 +118,18 @@ class NutritionOptimizer:
                 raise ValueError(
                     f"Unknown nutritional component: {nutritional_component}"
                 )
+
             # TODO: 画面側の表現を普通の単位に変えたいかも。Amount(g) とかじゃなくて g だけの方が直感的かも。
             if unit == "amount" or unit == "energy":
                 if min_max == "max":
                     self.problem += (
                         nutrient_value <= value,
-                        # TODO: とりあえず固定値にしているけど、全体的に動的にしたいかも。
-                        f"Max_{nutritional_component.capitalize()}_Amount",
+                        f"{min_max}_{nutritional_component}_{unit}",
                     )
                 elif min_max == "min":
                     self.problem += (
                         nutrient_value >= value,
-                        f"Min_{nutritional_component.capitalize()}_Amount",
+                        f"{min_max}_{nutritional_component}_{unit}",
                     )
 
             elif unit == "ratio":
@@ -142,14 +142,14 @@ class NutritionOptimizer:
                             total_fat_energy
                             <= self.total_energy
                             * (value / self._GRAM_CALCULATION_FACTOR),
-                            f"Max_{nutritional_component.capitalize()}_Ratio",
+                            f"{min_max}_{nutritional_component}_{unit}",
                         )
                     elif min_max == "min":
                         self.problem += (
                             total_fat_energy
                             >= self.total_energy
                             * (value / self._GRAM_CALCULATION_FACTOR),
-                            f"Min_{nutritional_component.capitalize()}_Ratio",
+                            f"{min_max}_{nutritional_component}_{unit}",
                         )
                 else:
                     if min_max == "max":
@@ -157,14 +157,14 @@ class NutritionOptimizer:
                             nutrient_value
                             <= self.total_energy
                             * (value / self._GRAM_CALCULATION_FACTOR),
-                            f"Max_{nutritional_component.capitalize()}_Ratio",
+                            f"{min_max}_{nutritional_component}_{unit}",
                         )
                     elif min_max == "min":
                         self.problem += (
                             nutrient_value
                             >= self.total_energy
                             * (value / self._GRAM_CALCULATION_FACTOR),
-                            f"Min_{nutritional_component.capitalize()}_Ratio",
+                            f"{min_max}_{nutritional_component}_{unit}",
                         )
             else:
                 raise ValueError(f"Unknown unit: {unit}")
