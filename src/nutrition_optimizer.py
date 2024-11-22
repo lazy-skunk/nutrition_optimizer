@@ -120,7 +120,7 @@ class NutritionOptimizer:
                 )
 
             # TODO: 画面側の表現を普通の単位に変えたいかも。Amount(g) とかじゃなくて g だけの方が直感的かも。
-            if unit == "amount" or unit == "energy":
+            if unit in ["amount", "energy"]:
                 if min_max == "max":
                     self.problem += (
                         nutrient_value <= value,
