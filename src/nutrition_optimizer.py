@@ -61,11 +61,11 @@ class NutritionOptimizer:
 
         self.problem = LpProblem(problem_name, problem_sense)
 
-        target = self._get_target_for_nutritional_component(
+        problem_target = self._get_target_for_nutritional_component(
             nutritional_component
         )
 
-        self.problem += (target, f"{problem}_{nutritional_component}")
+        self.problem += (problem_target, f"{problem}_{nutritional_component}")
 
     def _setup_objective_variables(self) -> None:
         for food_item in self.foods:
