@@ -36,29 +36,36 @@ class NutritionOptimizer:
                 cat="Integer",
             )
 
+    def _get_target_for_nutritional_component(
+        self, nutritional_component: str
+    ) -> float:
+        if nutritional_component == "energy":
+            return self.total_energy
+        elif nutritional_component == "protein":
+            return self.total_protein
+        elif nutritional_component == "fat":
+            return self.total_fat
+        elif nutritional_component == "carbohydrates":
+            return self.total_carbohydrates
+        else:
+            raise ValueError(
+                f"Unknown nutritional component: {nutritional_component}"
+            )
+
     def _setup_lp_problem(self) -> None:
         problem = self.objective.problem
-        nutrientional_component = self.objective.nutritional_component
+        nutritional_component = self.objective.nutritional_component
 
         problem_sense = LpMinimize if problem == "minimize" else LpMaximize
 
-        problem_name = f"{problem}_{nutrientional_component}"
+        problem_name = f"{problem}_{nutritional_component}"
         self.problem = LpProblem(problem_name, problem_sense)
 
-        if nutrientional_component == "energy":
-            target = self.total_energy
-        elif nutrientional_component == "protein":
-            target = self.total_protein
-        elif nutrientional_component == "fat":
-            target = self.total_fat
-        elif nutrientional_component == "carbohydrates":
-            target = self.total_carbohydrates
-        else:
-            raise ValueError(
-                f"Unknown nutritional component: {nutrientional_component}"
-            )
+        target = self._get_target_for_nutritional_component(
+            nutritional_component
+        )
 
-        self.problem += (target, f"{problem}_{nutrientional_component}")
+        self.problem += (target, f"{problem}_{nutritional_component}")
 
     def _setup_objective_variables(self) -> None:
         for food_item in self.foods:
