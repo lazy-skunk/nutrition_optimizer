@@ -22,10 +22,10 @@ class NutritionOptimizer:
         self.problem: LpProblem
 
         # TODO: この辺は配列か辞書にまとめて簡単にしたいかも。
-        self.total_energy: int = 0
-        self.total_protein: int = 0
-        self.total_fat: int = 0
-        self.total_carbohydrates: int = 0
+        self.total_energy: float = 0.0
+        self.total_protein: float = 0.0
+        self.total_fat: float = 0.0
+        self.total_carbohydrates: float = 0.0
 
     def _setup_lp_variables(self) -> None:
         for food_item in self.foods:
@@ -57,8 +57,8 @@ class NutritionOptimizer:
         nutritional_component = self.objective.nutritional_component
 
         problem_sense = LpMinimize if problem == "minimize" else LpMaximize
-
         problem_name = f"{problem}_{nutritional_component}"
+
         self.problem = LpProblem(problem_name, problem_sense)
 
         target = self._get_target_for_nutritional_component(
