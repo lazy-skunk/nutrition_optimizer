@@ -131,6 +131,26 @@ class NutritionOptimizer:
         elif min_max == "min":
             self.problem += (nutrient_value >= value, problem_name)
 
+    def _apply_nutrient_ratio_constraint(
+        self,
+        nutrient_energy: float,
+        min_max: str,
+        calculation_factor_value: float,
+        problem_name: str,
+    ) -> None:
+        if min_max == "max":
+            self.problem += (
+                nutrient_energy
+                <= self.total_energy * calculation_factor_value,
+                problem_name,
+            )
+        elif min_max == "min":
+            self.problem += (
+                nutrient_energy
+                >= self.total_energy * calculation_factor_value,
+                problem_name,
+            )
+
     def _apply_fat_ratio_constraint(
         self, min_max: str, calculation_factor_value: float, problem_name: str
     ) -> None:
@@ -166,27 +186,6 @@ class NutritionOptimizer:
             problem_name,
         )
 
-    def _apply_nutrient_ratio_constraint(
-        self,
-        nutrient_energy: float,
-        min_max: str,
-        calculation_factor_value: float,
-        problem_name: str,
-    ) -> None:
-        """栄養素のエネルギー割合制限を適用"""
-        if min_max == "max":
-            self.problem += (
-                nutrient_energy
-                <= self.total_energy * calculation_factor_value,
-                problem_name,
-            )
-        elif min_max == "min":
-            self.problem += (
-                nutrient_energy
-                >= self.total_energy * calculation_factor_value,
-                problem_name,
-            )
-
     def _apply_ratio_constraint(
         self,
         nutritional_component: str,
@@ -194,7 +193,6 @@ class NutritionOptimizer:
         calculation_factor_value: float,
         problem_name: str,
     ) -> None:
-        """Ratio に基づく制約を適用"""
         if nutritional_component == "fat":
             self._apply_fat_ratio_constraint(
                 min_max, calculation_factor_value, problem_name
@@ -209,8 +207,7 @@ class NutritionOptimizer:
             )
         else:
             raise ValueError(
-                "Unknown nutritional component"
-                f" for ratio: {nutritional_component}"
+                f"Unknown nutritional component: {nutritional_component}"
             )
 
     def _apply_constraint_for_unit(
@@ -223,7 +220,6 @@ class NutritionOptimizer:
         problem_name: str,
         calculation_factor_value: float,
     ) -> None:
-        """unitごとに制約を適用"""
         if unit in ["amount", "energy"]:
             self._apply_amount_or_energy_constraint(
                 min_max, nutrient_value, value, problem_name
@@ -239,7 +235,6 @@ class NutritionOptimizer:
             raise ValueError(f"Unknown unit: {unit}")
 
     def _setup_constraints(self) -> None:
-        # TODO: この辺がなんか長い。細分化したい。
         for constraint in self.constraints:
             nutritional_component = constraint.nutritional_component
             min_max = constraint.min_max
@@ -251,6 +246,7 @@ class NutritionOptimizer:
             problem_name = f"{min_max}_{nutritional_component}_{unit}"
             calculation_factor_value = value / self._GRAM_CALCULATION_FACTOR
             # TODO: 画面側の表現を普通の単位に変えたいかも。Amount(g) とかじゃなくて g だけの方が直感的かも。
+            # TODO: 引数を減らせないか検討したい。
             self._apply_constraint_for_unit(
                 unit,
                 nutritional_component,
