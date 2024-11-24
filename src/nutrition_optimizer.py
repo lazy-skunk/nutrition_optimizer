@@ -257,6 +257,74 @@ class NutritionOptimizer:
                 calculation_factor_value,
             )
 
+    def calculate_total_nutrients(
+        self,
+    ) -> tuple[float, float, float, float]:
+        total_protein_value = sum(
+            self.lp_variables[food].varValue * item.protein
+            for food, item in zip(self.lp_variables.keys(), self.foods)
+        )
+        total_fat_value = sum(
+            self.lp_variables[food].varValue * item.fat
+            for food, item in zip(self.lp_variables.keys(), self.foods)
+        )
+        total_carbohydrate_value = sum(
+            self.lp_variables[food].varValue * item.carbohydrates
+            for food, item in zip(self.lp_variables.keys(), self.foods)
+        )
+
+        total_kcal_value = (
+            total_protein_value * FoodInformation.PROTEIN_ENERGY_PER_GRAM
+            + total_fat_value * FoodInformation.FAT_ENERGY_PER_GRAM
+            + total_carbohydrate_value
+            * FoodInformation.CARBOHYDRATES_ENERGY_PER_GRAM
+        )
+
+        return (
+            total_protein_value,
+            total_fat_value,
+            total_carbohydrate_value,
+            total_kcal_value,
+        )
+
+    def calculate_pfc_ratios(
+        self,
+        total_protein_value: float,
+        total_fat_value: float,
+        total_carbohydrate_value: float,
+        total_kcal_value: float,
+    ) -> dict:
+        protein_ratio = (
+            total_protein_value
+            * FoodInformation.PROTEIN_ENERGY_PER_GRAM
+            / total_kcal_value
+        ) * self._GRAM_CALCULATION_FACTOR
+
+        fat_ratio = (
+            total_fat_value
+            * FoodInformation.FAT_ENERGY_PER_GRAM
+            / total_kcal_value
+        ) * self._GRAM_CALCULATION_FACTOR
+
+        carbohydrate_ratio = (
+            total_carbohydrate_value
+            * FoodInformation.CARBOHYDRATES_ENERGY_PER_GRAM
+            / total_kcal_value
+        ) * self._GRAM_CALCULATION_FACTOR
+
+        return {
+            "protein_ratio": f"{protein_ratio:.1f}%",
+            "fat_ratio": f"{fat_ratio:.1f}%",
+            "carbohydrate_ratio": f"{carbohydrate_ratio:.1f}%",
+        }
+
+    def build_result(self) -> dict:
+        result = {
+            food: f"{self.lp_variables[food].varValue}g"
+            for food in self.lp_variables
+        }
+        return result
+
     def solve(self) -> dict:
         self._setup_lp_variables()
         self._setup_objective_variables()
@@ -265,65 +333,19 @@ class NutritionOptimizer:
         self.problem.solve()
 
         if LpStatus[self.problem.status] == "Optimal":
-            result = {
-                food: f"{self.lp_variables[food].varValue}g"
-                for food in self.lp_variables
-            }
-
-            total_protein_value = sum(
-                self.lp_variables[food].varValue * item.protein
-                for food, item in zip(
-                    self.lp_variables.keys(),
-                    self.foods,
-                )
+            (
+                total_protein_value,
+                total_fat_value,
+                total_carbohydrate_value,
+                total_kcal_value,
+            ) = self.calculate_total_nutrients()
+            pfc_ratio = self.calculate_pfc_ratios(
+                total_protein_value,
+                total_fat_value,
+                total_carbohydrate_value,
+                total_kcal_value,
             )
-
-            total_fat_value = sum(
-                self.lp_variables[food].varValue * item.fat
-                for food, item in zip(
-                    self.lp_variables.keys(),
-                    self.foods,
-                )
-            )
-
-            total_carbohydrate_value = sum(
-                self.lp_variables[food].varValue * item.carbohydrates
-                for food, item in zip(
-                    self.lp_variables.keys(),
-                    self.foods,
-                )
-            )
-
-            total_kcal_value = (
-                total_protein_value * FoodInformation.PROTEIN_ENERGY_PER_GRAM
-                + total_fat_value * FoodInformation.FAT_ENERGY_PER_GRAM
-                + total_carbohydrate_value
-                * FoodInformation.CARBOHYDRATES_ENERGY_PER_GRAM
-            )
-
-            protein_ratio = (
-                total_protein_value
-                * FoodInformation.PROTEIN_ENERGY_PER_GRAM
-                / total_kcal_value
-            ) * self._GRAM_CALCULATION_FACTOR
-
-            fat_ratio = (
-                total_fat_value
-                * FoodInformation.FAT_ENERGY_PER_GRAM
-                / total_kcal_value
-            ) * self._GRAM_CALCULATION_FACTOR
-
-            carbohydrate_ratio = (
-                total_carbohydrate_value
-                * FoodInformation.CARBOHYDRATES_ENERGY_PER_GRAM
-                / total_kcal_value
-            ) * self._GRAM_CALCULATION_FACTOR
-
-            pfc_ratio = {
-                "protein_ratio": f"{protein_ratio:.1f}%",
-                "fat_ratio": f"{fat_ratio:.1f}%",
-                "carbohydrate_ratio": f"{carbohydrate_ratio:.1f}%",
-            }
+            result = self.build_result()
 
             return {
                 "status": "Optimal",
