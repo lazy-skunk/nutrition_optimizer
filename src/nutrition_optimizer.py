@@ -71,37 +71,29 @@ class NutritionOptimizer:
         for food_item in self.foods:
             self.total_energy += (
                 food_item.energy
-                * (
-                    food_item.grams_per_unit
-                    * self.lp_variables[food_item.name]
-                )
+                * food_item.grams_per_unit
+                * self.lp_variables[food_item.name]
                 / self._GRAM_CALCULATION_FACTOR
             )
 
             self.total_protein += (
                 food_item.protein
-                * (
-                    food_item.grams_per_unit
-                    * self.lp_variables[food_item.name]
-                )
+                * food_item.grams_per_unit
+                * self.lp_variables[food_item.name]
                 / self._GRAM_CALCULATION_FACTOR
             )
 
             self.total_fat += (
                 food_item.fat
-                * (
-                    food_item.grams_per_unit
-                    * self.lp_variables[food_item.name]
-                )
+                * food_item.grams_per_unit
+                * self.lp_variables[food_item.name]
                 / self._GRAM_CALCULATION_FACTOR
             )
 
             self.total_carbohydrates += (
                 food_item.carbohydrates
-                * (
-                    food_item.grams_per_unit
-                    * self.lp_variables[food_item.name]
-                )
+                * food_item.grams_per_unit
+                * self.lp_variables[food_item.name]
                 / self._GRAM_CALCULATION_FACTOR
             )
 
@@ -257,7 +249,7 @@ class NutritionOptimizer:
                 calculation_factor_value,
             )
 
-    def calculate_total_nutrients(
+    def _calculate_total_nutrients(
         self,
     ) -> tuple[float, float, float, float]:
         total_protein_value = sum(
@@ -287,7 +279,7 @@ class NutritionOptimizer:
             total_kcal_value,
         )
 
-    def calculate_pfc_ratios(
+    def _calculate_pfc_ratios(
         self,
         total_protein_value: float,
         total_fat_value: float,
@@ -318,7 +310,7 @@ class NutritionOptimizer:
             "carbohydrate_ratio": f"{carbohydrate_ratio:.1f}%",
         }
 
-    def build_result(self) -> dict:
+    def _build_result(self) -> dict:
         result = {
             food: f"{self.lp_variables[food].varValue}g"
             for food in self.lp_variables
@@ -338,14 +330,15 @@ class NutritionOptimizer:
                 total_fat_value,
                 total_carbohydrate_value,
                 total_kcal_value,
-            ) = self.calculate_total_nutrients()
-            pfc_ratio = self.calculate_pfc_ratios(
+            ) = self._calculate_total_nutrients()
+
+            pfc_ratio = self._calculate_pfc_ratios(
                 total_protein_value,
                 total_fat_value,
                 total_carbohydrate_value,
                 total_kcal_value,
             )
-            result = self.build_result()
+            result = self._build_result()
 
             return {
                 "status": "Optimal",

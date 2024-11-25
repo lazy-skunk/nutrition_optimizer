@@ -23,26 +23,25 @@ FOODS = {
     },
 }
 
-problem = LpProblem("制約に基づきカロリーを最大化", sense=LpMaximize)
 
-rice_grams = LpVariable("米の量", lowBound=450, cat="Integer")
+rice_grams = LpVariable("米の量", lowBound=450, upBound=800, cat="Integer")
 chicken_fillet_units = LpVariable(
-    "ささみの数", lowBound=3, upBound=6, cat="Integer"
+    "ささみの数", lowBound=150, upBound=300, cat="Integer"
 )
 boiled_egg_units = LpVariable(
-    "ゆで卵の数", lowBound=3, upBound=4, cat="Integer"
+    "ゆで卵の数", lowBound=150, upBound=200, cat="Integer"
 )
 broccoli_units = LpVariable(
-    "ブロッコリーの数", lowBound=3, upBound=6, cat="Integer"
+    "ブロッコリーの数", lowBound=45, upBound=90, cat="Integer"
 )
 xplosion_units = LpVariable(
-    "プロテインの数", lowBound=3, upBound=4, cat="Integer"
+    "プロテインの数", lowBound=60, upBound=90, cat="Integer"
 )
 
-CHICKEN_FILLET_GRAMS_PER_UNIT = 50
-BOILED_EGG_GRAMS_PER_UNIT = 50
-BROCCOLI_GRAMS_PER_UNIT = 15
-XPLOSION_GRAMS_PER_UNIT = 30
+CHICKEN_FILLET_GRAMS_PER_UNIT = 1
+BOILED_EGG_GRAMS_PER_UNIT = 1
+BROCCOLI_GRAMS_PER_UNIT = 1
+XPLOSION_GRAMS_PER_UNIT = 1
 
 GRAM_CALCULATION_FACTOR = 100
 
@@ -86,9 +85,32 @@ total_protein_grams = (
     / GRAM_CALCULATION_FACTOR
 )
 
+total_fat_grams = (
+    FOODS["rice"]["fat"] * rice_grams / GRAM_CALCULATION_FACTOR
+    + FOODS["chicken_fillet"]["fat"]
+    * CHICKEN_FILLET_GRAMS_PER_UNIT
+    * chicken_fillet_units
+    / GRAM_CALCULATION_FACTOR
+    + FOODS["boiled_egg"]["fat"]
+    * BOILED_EGG_GRAMS_PER_UNIT
+    * boiled_egg_units
+    / GRAM_CALCULATION_FACTOR
+    + FOODS["broccoli"]["fat"]
+    * BROCCOLI_GRAMS_PER_UNIT
+    * broccoli_units
+    / GRAM_CALCULATION_FACTOR
+    + FOODS["xplosion"]["fat"]
+    * XPLOSION_GRAMS_PER_UNIT
+    * xplosion_units
+    / GRAM_CALCULATION_FACTOR
+)
+
+problem = LpProblem("制約に基づきカロリーを最大化", sense=LpMaximize)
 problem += total_kcal, "カロリーを最大化"
 problem += total_kcal <= 1700, "カロリーの上限"
-problem += total_protein_grams <= 78 * 2, "たんぱく質のグラム数上限"
+problem += total_protein_grams <= 160, "たんぱく質のグラム数上限"
+problem += total_protein_grams >= 150, "たんぱく質のグラム数下限"
+problem += total_fat_grams * 9 <= total_kcal * 0.2, "脂質の割合上限"
 
 problem.solve()
 
