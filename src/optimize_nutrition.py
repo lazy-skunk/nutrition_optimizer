@@ -24,7 +24,7 @@ FOODS = {
 }
 
 
-rice_grams = LpVariable("米の量", lowBound=450, upBound=800, cat="Integer")
+rice_grams = LpVariable("米の量", lowBound=200, upBound=800, cat="Integer")
 chicken_fillet_units = LpVariable(
     "ささみの数", lowBound=150, upBound=300, cat="Integer"
 )
@@ -35,7 +35,7 @@ broccoli_units = LpVariable(
     "ブロッコリーの数", lowBound=45, upBound=90, cat="Integer"
 )
 xplosion_units = LpVariable(
-    "プロテインの数", lowBound=60, upBound=90, cat="Integer"
+    "プロテインの数", lowBound=90, upBound=120, cat="Integer"
 )
 
 CHICKEN_FILLET_GRAMS_PER_UNIT = 1
@@ -120,18 +120,10 @@ if LpStatus[problem.status] == "Optimal":
     print("###")
     print("1 日の総摂取量は次のとおりです。")
     print(f"ご飯: {rice_grams.varValue} g")
-    print(f"ブロッコリー: {broccoli_units.varValue} つ")
-    print(f"ささみ: {chicken_fillet_units.varValue} 本")
-    print(f"ゆで卵: {boiled_egg_units.varValue} つ")
-    print(f"プロテイン: {xplosion_units.varValue} 杯")
-
-    print("###")
-    print("1 食の摂取量は次のとおりです。")
-    print(f"ご飯: {rice_grams.varValue // 3} g")
-    print(f"ブロッコリー: {broccoli_units.varValue // 3} つ")
-    print(f"ささみ: {chicken_fillet_units.varValue // 3} 本")
-    print(f"ゆで卵: {boiled_egg_units.varValue // 3} つ")
-    print(f"プロテイン: {xplosion_units.varValue // 3} 杯")
+    print(f"ブロッコリー: {broccoli_units.varValue} g")
+    print(f"ささみ: {chicken_fillet_units.varValue} g")
+    print(f"ゆで卵: {boiled_egg_units.varValue} g")
+    print(f"プロテイン: {xplosion_units.varValue} g")
 
     total_protein_value = (
         FOODS["rice"]["protein"]
