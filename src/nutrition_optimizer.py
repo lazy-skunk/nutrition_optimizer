@@ -65,7 +65,7 @@ class NutritionOptimizer:
             nutritional_component
         )
 
-        self.problem += (problem_target, f"{problem}_{nutritional_component}")
+        self.problem += (problem_target, problem_name)
 
     def _setup_objective_variables(self) -> None:
         for food_item in self.foods:
@@ -256,10 +256,12 @@ class NutritionOptimizer:
             self.lp_variables[food].varValue * item.protein
             for food, item in zip(self.lp_variables.keys(), self.foods)
         )
+
         total_fat_value = sum(
             self.lp_variables[food].varValue * item.fat
             for food, item in zip(self.lp_variables.keys(), self.foods)
         )
+
         total_carbohydrate_value = sum(
             self.lp_variables[food].varValue * item.carbohydrates
             for food, item in zip(self.lp_variables.keys(), self.foods)
