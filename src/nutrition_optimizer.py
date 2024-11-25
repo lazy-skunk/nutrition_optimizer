@@ -315,17 +315,17 @@ class NutritionOptimizer:
         ) * self._GRAM_CALCULATION_FACTOR
 
         return {
-            "protein_ratio": f"{protein_ratio:.1f}%",
-            "fat_ratio": f"{fat_ratio:.1f}%",
-            "carbohydrate_ratio": f"{carbohydrate_ratio:.1f}%",
+            "protein_ratio": protein_ratio,
+            "fat_ratio": fat_ratio,
+            "carbohydrate_ratio": carbohydrate_ratio,
         }
 
     def _calculate_food_intake(self) -> dict:
-        result = {
-            food: f"{self.lp_variables[food].varValue}g"
+        food_intake = {
+            food: self.lp_variables[food].varValue
             for food in self.lp_variables
         }
-        return result
+        return food_intake
 
     def solve(self) -> dict:
         self._setup_lp_variables()
@@ -346,10 +346,10 @@ class NutritionOptimizer:
             ) = self._calculate_total_nutrients()
 
             pfc_kcal_values = {
-                "protein": f"{total_protein_value:.1f} g",
-                "fat": f"{total_fat_value:.1f} g",
-                "carbohydrates": f"{total_carbohydrate_value:.1f} g",
-                "kcal": f"{total_kcal_value:.1f} kcal",
+                "protein": total_protein_value,
+                "fat": total_fat_value,
+                "carbohydrates": total_carbohydrate_value,
+                "kcal": total_kcal_value,
             }
 
             pfc_ratio = self._calculate_pfc_ratios(
@@ -366,4 +366,4 @@ class NutritionOptimizer:
                 "pfc_kcal_values": pfc_kcal_values,
             }
         else:
-            return {"status": solution_result, "result": {}}
+            return {"status": solution_result}
