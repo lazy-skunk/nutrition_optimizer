@@ -10,15 +10,15 @@ class NutritionOptimizer:
 
     def __init__(
         self,
-        foods: list[FoodInformation],
+        food_informations: list[FoodInformation],
         objective: Objective,
         constraints: list[Constraint],
     ) -> None:
-        self.foods: list[FoodInformation] = foods
+        self.food_information: list[FoodInformation] = food_informations
         self.objective: Objective = objective
         self.constraints: list[Constraint] = constraints
 
-        self.lp_variables: dict[str, LpVariable] = {}
+        self.food_intake_variables: dict[str, LpVariable] = {}
         self.problem: LpProblem
 
         # TODO: この辺は配列か辞書にまとめて簡単にしたいかも。
@@ -27,12 +27,12 @@ class NutritionOptimizer:
         self.total_fat: float = 0.0
         self.total_carbohydrates: float = 0.0
 
-    def _setup_lp_variables(self) -> None:
-        for food_item in self.foods:
-            self.lp_variables[food_item.name] = LpVariable(
-                food_item.name,
-                lowBound=food_item.minimum_intake,
-                upBound=food_item.maximum_intake,
+    def _setup_food_intake_variables(self) -> None:
+        for food_infomation in self.food_information:
+            self.food_intake_variables[food_infomation.name] = LpVariable(
+                food_infomation.name,
+                lowBound=food_infomation.minimum_intake,
+                upBound=food_infomation.maximum_intake,
                 cat="Integer",
             )
 
@@ -56,7 +56,7 @@ class NutritionOptimizer:
         problem = self.objective.problem
         nutritional_component = self.objective.nutritional_component
 
-        problem_sense = LpMinimize if problem == "minimize" else LpMaximize
+        problem_sense = LpMaximize if problem == "maximize" else LpMinimize
         problem_name = f"{problem}_{nutritional_component}"
 
         self.problem = LpProblem(problem_name, problem_sense)
@@ -65,35 +65,35 @@ class NutritionOptimizer:
             nutritional_component
         )
 
-        self.problem += (problem_target, problem_name)
+        self.problem += problem_target, problem_name
 
     def _setup_objective_variables(self) -> None:
-        for food_item in self.foods:
+        for food_information in self.food_information:
             self.total_energy += (
-                food_item.energy
-                * food_item.grams_per_unit
-                * self.lp_variables[food_item.name]
+                food_information.energy
+                * food_information.grams_per_unit
+                * self.food_intake_variables[food_information.name]
                 / self._GRAM_CALCULATION_FACTOR
             )
 
             self.total_protein += (
-                food_item.protein
-                * food_item.grams_per_unit
-                * self.lp_variables[food_item.name]
+                food_information.protein
+                * food_information.grams_per_unit
+                * self.food_intake_variables[food_information.name]
                 / self._GRAM_CALCULATION_FACTOR
             )
 
             self.total_fat += (
-                food_item.fat
-                * food_item.grams_per_unit
-                * self.lp_variables[food_item.name]
+                food_information.fat
+                * food_information.grams_per_unit
+                * self.food_intake_variables[food_information.name]
                 / self._GRAM_CALCULATION_FACTOR
             )
 
             self.total_carbohydrates += (
-                food_item.carbohydrates
-                * food_item.grams_per_unit
-                * self.lp_variables[food_item.name]
+                food_information.carbohydrates
+                * food_information.grams_per_unit
+                * self.food_intake_variables[food_information.name]
                 / self._GRAM_CALCULATION_FACTOR
             )
 
@@ -253,33 +253,41 @@ class NutritionOptimizer:
         total_protein_value = sum(
             item.protein
             * item.grams_per_unit
-            * self.lp_variables[food].varValue
+            * self.food_intake_variables[food].varValue
             / self._GRAM_CALCULATION_FACTOR
-            for food, item in zip(self.lp_variables.keys(), self.foods)
+            for food, item in zip(
+                self.food_intake_variables.keys(), self.food_information
+            )
         )
 
         total_fat_value = sum(
-            self.lp_variables[food].varValue
+            self.food_intake_variables[food].varValue
             * item.grams_per_unit
             * item.fat
             / self._GRAM_CALCULATION_FACTOR
-            for food, item in zip(self.lp_variables.keys(), self.foods)
+            for food, item in zip(
+                self.food_intake_variables.keys(), self.food_information
+            )
         )
 
         total_carbohydrate_value = sum(
-            self.lp_variables[food].varValue
+            self.food_intake_variables[food].varValue
             * item.grams_per_unit
             * item.carbohydrates
             / self._GRAM_CALCULATION_FACTOR
-            for food, item in zip(self.lp_variables.keys(), self.foods)
+            for food, item in zip(
+                self.food_intake_variables.keys(), self.food_information
+            )
         )
 
         total_kcal_value = sum(
-            self.lp_variables[food].varValue
+            self.food_intake_variables[food].varValue
             * item.grams_per_unit
             * item.energy
             / self._GRAM_CALCULATION_FACTOR
-            for food, item in zip(self.lp_variables.keys(), self.foods)
+            for food, item in zip(
+                self.food_intake_variables.keys(), self.food_information
+            )
         )
 
         return (
@@ -322,13 +330,13 @@ class NutritionOptimizer:
 
     def _calculate_food_intake(self) -> dict:
         food_intake = {
-            food: self.lp_variables[food].varValue
-            for food in self.lp_variables
+            food: self.food_intake_variables[food].varValue
+            for food in self.food_intake_variables
         }
         return food_intake
 
     def solve(self) -> dict:
-        self._setup_lp_variables()
+        self._setup_food_intake_variables()
         self._setup_objective_variables()
         self._setup_lp_problem()
         self._setup_constraints()
