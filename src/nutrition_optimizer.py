@@ -10,11 +10,11 @@ class NutritionOptimizer:
 
     def __init__(
         self,
-        food_informations: list[FoodInformation],
+        food_information: list[FoodInformation],
         objective: Objective,
         constraints: list[Constraint],
     ) -> None:
-        self.food_information: list[FoodInformation] = food_informations
+        self.food_information: list[FoodInformation] = food_information
         self.objective: Objective = objective
         self.constraints: list[Constraint] = constraints
 
