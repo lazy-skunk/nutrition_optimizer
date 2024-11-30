@@ -16,12 +16,12 @@ def optimize() -> Response:
     try:
         parsed_data = Utilities.parse_request_data(request)
 
-        food_information_list = parsed_data["food_information_list"]
+        food_information = parsed_data["food_information_list"]
         objective = parsed_data["objective"]
-        constraint_list = parsed_data["constraints"]
+        constraints = parsed_data["constraints"]
 
         nutrition_optimizer = NutritionOptimizer(
-            food_information_list, objective, constraint_list
+            food_information, objective, constraints
         )
         result = nutrition_optimizer.solve()
 
