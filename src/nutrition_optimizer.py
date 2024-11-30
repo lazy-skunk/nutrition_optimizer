@@ -113,11 +113,16 @@ class NutritionOptimizer:
 
     def _apply_amount_or_energy_constraint(
         self,
-        min_max: str,
+        constraint: Constraint,
         nutrient_value: float,
-        value: float,
-        problem_name: str,
     ) -> None:
+        min_max = constraint.min_max
+        nutritional_component = constraint.nutritional_component
+        unit = constraint.unit
+        value = constraint.value
+
+        problem_name = f"{min_max}_{nutritional_component}_{unit}"
+
         if min_max == "max":
             self.problem += (nutrient_value <= value, problem_name)
         elif min_max == "min":
@@ -125,11 +130,19 @@ class NutritionOptimizer:
 
     def _apply_nutrient_ratio_constraint(
         self,
+        constraint: Constraint,
         nutrient_energy: float,
-        min_max: str,
-        calculation_factor_value: float,
-        problem_name: str,
     ) -> None:
+        min_max = constraint.min_max
+        nutritional_component = constraint.nutritional_component
+        unit = constraint.unit
+
+        problem_name = f"{min_max}_{nutritional_component}_{unit}"
+
+        calculation_factor_value = (
+            constraint.value / self._GRAM_CALCULATION_FACTOR
+        )
+
         if min_max == "max":
             self.problem += (
                 nutrient_energy
@@ -144,59 +157,46 @@ class NutritionOptimizer:
             )
 
     def _apply_fat_ratio_constraint(
-        self, min_max: str, calculation_factor_value: float, problem_name: str
+        self,
+        constraint: Constraint,
     ) -> None:
         total_fat_energy = self.total_fat * FoodInformation.FAT_ENERGY_PER_GRAM
-        self._apply_nutrient_ratio_constraint(
-            total_fat_energy, min_max, calculation_factor_value, problem_name
-        )
+        self._apply_nutrient_ratio_constraint(constraint, total_fat_energy)
 
     def _apply_protein_ratio_constraint(
-        self, min_max: str, calculation_factor_value: float, problem_name: str
+        self,
+        constraint: Constraint,
     ) -> None:
         total_protein_energy = (
             self.total_protein * FoodInformation.PROTEIN_ENERGY_PER_GRAM
         )
-        self._apply_nutrient_ratio_constraint(
-            total_protein_energy,
-            min_max,
-            calculation_factor_value,
-            problem_name,
-        )
+        self._apply_nutrient_ratio_constraint(constraint, total_protein_energy)
 
     def _apply_carbohydrate_ratio_constraint(
-        self, min_max: str, calculation_factor_value: float, problem_name: str
+        self,
+        constraint: Constraint,
     ) -> None:
         total_carbohydrates_energy = (
             self.total_carbohydrates
             * FoodInformation.CARBOHYDRATES_ENERGY_PER_GRAM
         )
+
         self._apply_nutrient_ratio_constraint(
+            constraint,
             total_carbohydrates_energy,
-            min_max,
-            calculation_factor_value,
-            problem_name,
         )
 
     def _apply_ratio_constraint(
         self,
-        nutritional_component: str,
-        min_max: str,
-        calculation_factor_value: float,
-        problem_name: str,
+        constraint: Constraint,
     ) -> None:
+        nutritional_component = constraint.nutritional_component
         if nutritional_component == "fat":
-            self._apply_fat_ratio_constraint(
-                min_max, calculation_factor_value, problem_name
-            )
+            self._apply_fat_ratio_constraint(constraint)
         elif nutritional_component == "protein":
-            self._apply_protein_ratio_constraint(
-                min_max, calculation_factor_value, problem_name
-            )
+            self._apply_protein_ratio_constraint(constraint)
         elif nutritional_component == "carbohydrates":
-            self._apply_carbohydrate_ratio_constraint(
-                min_max, calculation_factor_value, problem_name
-            )
+            self._apply_carbohydrate_ratio_constraint(constraint)
         else:
             raise ValueError(
                 f"Unknown nutritional component: {nutritional_component}"
@@ -204,49 +204,27 @@ class NutritionOptimizer:
 
     def _apply_constraint_for_unit(
         self,
-        unit: str,
-        nutritional_component: str,
-        min_max: str,
-        value: float,
+        constraint: Constraint,
         nutrient_value: float,
-        problem_name: str,
     ) -> None:
+        unit = constraint.unit
         if unit in ["amount", "energy"]:
-            self._apply_amount_or_energy_constraint(
-                min_max, nutrient_value, value, problem_name
-            )
+            self._apply_amount_or_energy_constraint(constraint, nutrient_value)
         elif unit == "ratio":
-            calculation_factor_value = value / self._GRAM_CALCULATION_FACTOR
-            self._apply_ratio_constraint(
-                nutritional_component,
-                min_max,
-                calculation_factor_value,
-                problem_name,
-            )
+            self._apply_ratio_constraint(constraint)
         else:
             raise ValueError(f"Unknown unit: {unit}")
 
     def _setup_constraints(self) -> None:
         for constraint in self.constraints:
-            # TODO: Constraint オブジェクトをそのまま渡して必要な時に値を参照すればよいかも。
-            # いちいち分解して保持する必要はないかもしれない。
-            nutritional_component = constraint.nutritional_component
-            min_max = constraint.min_max
-            value = constraint.value
-            unit = constraint.unit
+            nutrient_value = self._get_nutrient_value(
+                constraint.nutritional_component
+            )
 
-            nutrient_value = self._get_nutrient_value(nutritional_component)
-
-            problem_name = f"{min_max}_{nutritional_component}_{unit}"
             # TODO: 画面側の表現を普通の単位に変えたいかも。Amount(g) とかじゃなくて g だけの方が直感的かも。
-            # TODO: 引数を減らせないか検討したい。
             self._apply_constraint_for_unit(
-                unit,
-                nutritional_component,
-                min_max,
-                value,
+                constraint,
                 nutrient_value,
-                problem_name,
             )
 
     def _calculate_total_nutrients(self) -> tuple[float, float, float, float]:
