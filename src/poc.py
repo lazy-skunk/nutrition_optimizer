@@ -24,24 +24,43 @@ FOODS = {
 }
 
 
+# rice_grams = LpVariable("米の量", lowBound=200, upBound=800, cat="Integer")
+# chicken_fillet_units = LpVariable(
+#     "ささみの数", lowBound=150, upBound=300, cat="Integer"
+# )
+# boiled_egg_units = LpVariable(
+#     "ゆで卵の数", lowBound=150, upBound=200, cat="Integer"
+# )
+# broccoli_units = LpVariable(
+#     "ブロッコリーの数", lowBound=45, upBound=90, cat="Integer"
+# )
+# xplosion_units = LpVariable(
+#     "プロテインの数", lowBound=90, upBound=120, cat="Integer"
+# )
+
+# CHICKEN_FILLET_GRAMS_PER_UNIT = 1
+# BOILED_EGG_GRAMS_PER_UNIT = 1
+# BROCCOLI_GRAMS_PER_UNIT = 1
+# XPLOSION_GRAMS_PER_UNIT = 1
+
 rice_grams = LpVariable("米の量", lowBound=200, upBound=800, cat="Integer")
 chicken_fillet_units = LpVariable(
-    "ささみの数", lowBound=150, upBound=300, cat="Integer"
+    "ささみの数", lowBound=6, upBound=8, cat="Integer"
 )
 boiled_egg_units = LpVariable(
-    "ゆで卵の数", lowBound=150, upBound=200, cat="Integer"
+    "ゆで卵の数", lowBound=3, upBound=4, cat="Integer"
 )
 broccoli_units = LpVariable(
-    "ブロッコリーの数", lowBound=45, upBound=90, cat="Integer"
+    "ブロッコリーの数", lowBound=6, upBound=9, cat="Integer"
 )
 xplosion_units = LpVariable(
-    "プロテインの数", lowBound=90, upBound=120, cat="Integer"
+    "プロテインの数", lowBound=2, upBound=3, cat="Integer"
 )
 
-CHICKEN_FILLET_GRAMS_PER_UNIT = 1
-BOILED_EGG_GRAMS_PER_UNIT = 1
-BROCCOLI_GRAMS_PER_UNIT = 1
-XPLOSION_GRAMS_PER_UNIT = 1
+CHICKEN_FILLET_GRAMS_PER_UNIT = 40
+BOILED_EGG_GRAMS_PER_UNIT = 50
+BROCCOLI_GRAMS_PER_UNIT = 15
+XPLOSION_GRAMS_PER_UNIT = 30
 
 GRAM_CALCULATION_FACTOR = 100
 
