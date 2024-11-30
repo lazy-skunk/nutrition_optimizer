@@ -156,47 +156,31 @@ class NutritionOptimizer:
                 problem_name,
             )
 
-    def _apply_fat_ratio_constraint(
-        self,
-        constraint: Constraint,
-    ) -> None:
-        total_fat_energy = self.total_fat * FoodInformation.FAT_ENERGY_PER_GRAM
-        self._apply_nutrient_ratio_constraint(constraint, total_fat_energy)
-
-    def _apply_protein_ratio_constraint(
-        self,
-        constraint: Constraint,
-    ) -> None:
-        total_protein_energy = (
-            self.total_protein * FoodInformation.PROTEIN_ENERGY_PER_GRAM
-        )
-        self._apply_nutrient_ratio_constraint(constraint, total_protein_energy)
-
-    def _apply_carbohydrate_ratio_constraint(
-        self,
-        constraint: Constraint,
-    ) -> None:
-        total_carbohydrates_energy = (
-            self.total_carbohydrates
-            * FoodInformation.CARBOHYDRATES_ENERGY_PER_GRAM
-        )
-
-        self._apply_nutrient_ratio_constraint(
-            constraint,
-            total_carbohydrates_energy,
-        )
-
     def _apply_ratio_constraint(
         self,
         constraint: Constraint,
     ) -> None:
         nutritional_component = constraint.nutritional_component
         if nutritional_component == "fat":
-            self._apply_fat_ratio_constraint(constraint)
+            total_fat_energy = (
+                self.total_fat * FoodInformation.FAT_ENERGY_PER_GRAM
+            )
+            self._apply_nutrient_ratio_constraint(constraint, total_fat_energy)
         elif nutritional_component == "protein":
-            self._apply_protein_ratio_constraint(constraint)
+            total_protein_energy = (
+                self.total_protein * FoodInformation.PROTEIN_ENERGY_PER_GRAM
+            )
+            self._apply_nutrient_ratio_constraint(
+                constraint, total_protein_energy
+            )
         elif nutritional_component == "carbohydrates":
-            self._apply_carbohydrate_ratio_constraint(constraint)
+            total_carbohydrates_energy = (
+                self.total_carbohydrates
+                * FoodInformation.CARBOHYDRATES_ENERGY_PER_GRAM
+            )
+            self._apply_nutrient_ratio_constraint(
+                constraint, total_carbohydrates_energy
+            )
         else:
             raise ValueError(
                 f"Unknown nutritional component: {nutritional_component}"
