@@ -68,6 +68,7 @@ class NutritionOptimizer:
         self.problem += problem_target, problem_name
 
     def _setup_objective_variables(self) -> None:
+        # TODO: getattr で効率化できるかな。
         for food_information in self.food_information:
             self.total_energy += (
                 food_information.energy
@@ -202,52 +203,15 @@ class NutritionOptimizer:
             else:
                 raise ValueError(f"Unknown unit: {unit}")
 
-    def _calculate_total_nutrients(self) -> tuple[float, float, float, float]:
-        total_protein_value = sum(
-            food_information.protein
+    def _calculate_total_nutrients(self, nutrient_property: str) -> float:
+        return sum(
+            getattr(food_information, nutrient_property)
             * food_information.grams_per_unit
             * self.food_intake_variables[food_name].varValue
             / self._GRAM_CALCULATION_FACTOR
             for food_name, food_information in zip(
                 self.food_intake_variables.keys(), self.food_information
             )
-        )
-
-        total_fat_value = sum(
-            self.food_intake_variables[food_name].varValue
-            * food_information.grams_per_unit
-            * food_information.fat
-            / self._GRAM_CALCULATION_FACTOR
-            for food_name, food_information in zip(
-                self.food_intake_variables.keys(), self.food_information
-            )
-        )
-
-        total_carbohydrate_value = sum(
-            self.food_intake_variables[food_name].varValue
-            * food_information.grams_per_unit
-            * food_information.carbohydrates
-            / self._GRAM_CALCULATION_FACTOR
-            for food_name, food_information in zip(
-                self.food_intake_variables.keys(), self.food_information
-            )
-        )
-
-        total_kcal_value = sum(
-            self.food_intake_variables[food_name].varValue
-            * food_information.grams_per_unit
-            * food_information.energy
-            / self._GRAM_CALCULATION_FACTOR
-            for food_name, food_information in zip(
-                self.food_intake_variables.keys(), self.food_information
-            )
-        )
-
-        return (
-            total_protein_value,
-            total_fat_value,
-            total_carbohydrate_value,
-            total_kcal_value,
         )
 
     def _calculate_pfc_ratios(
@@ -257,6 +221,7 @@ class NutritionOptimizer:
         total_carbohydrate_value: float,
         total_kcal_value: float,
     ) -> dict:
+        # TODO: おや？ここも改良できるな。冗長だ。
         protein_ratio = (
             total_protein_value
             * FoodInformation.PROTEIN_ENERGY_PER_GRAM
@@ -299,12 +264,12 @@ class NutritionOptimizer:
         if solution_result == "Optimal":
             food_intake = self._calculate_food_intake()
 
-            (
-                total_protein_value,
-                total_fat_value,
-                total_carbohydrate_value,
-                total_kcal_value,
-            ) = self._calculate_total_nutrients()
+            total_protein_value = self._calculate_total_nutrients("protein")
+            total_fat_value = self._calculate_total_nutrients("fat")
+            total_carbohydrate_value = self._calculate_total_nutrients(
+                "carbohydrates"
+            )
+            total_kcal_value = self._calculate_total_nutrients("energy")
 
             pfc_kcal_values = {
                 "protein": total_protein_value,
