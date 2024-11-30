@@ -210,13 +210,13 @@ class NutritionOptimizer:
         value: float,
         nutrient_value: float,
         problem_name: str,
-        calculation_factor_value: float,
     ) -> None:
         if unit in ["amount", "energy"]:
             self._apply_amount_or_energy_constraint(
                 min_max, nutrient_value, value, problem_name
             )
         elif unit == "ratio":
+            calculation_factor_value = value / self._GRAM_CALCULATION_FACTOR
             self._apply_ratio_constraint(
                 nutritional_component,
                 min_max,
@@ -228,6 +228,8 @@ class NutritionOptimizer:
 
     def _setup_constraints(self) -> None:
         for constraint in self.constraints:
+            # TODO: Constraint オブジェクトをそのまま渡して必要な時に値を参照すればよいかも。
+            # いちいち分解して保持する必要はないかもしれない。
             nutritional_component = constraint.nutritional_component
             min_max = constraint.min_max
             value = constraint.value
@@ -236,7 +238,6 @@ class NutritionOptimizer:
             nutrient_value = self._get_nutrient_value(nutritional_component)
 
             problem_name = f"{min_max}_{nutritional_component}_{unit}"
-            calculation_factor_value = value / self._GRAM_CALCULATION_FACTOR
             # TODO: 画面側の表現を普通の単位に変えたいかも。Amount(g) とかじゃなくて g だけの方が直感的かも。
             # TODO: 引数を減らせないか検討したい。
             self._apply_constraint_for_unit(
@@ -246,46 +247,45 @@ class NutritionOptimizer:
                 value,
                 nutrient_value,
                 problem_name,
-                calculation_factor_value,
             )
 
     def _calculate_total_nutrients(self) -> tuple[float, float, float, float]:
         total_protein_value = sum(
-            item.protein
-            * item.grams_per_unit
-            * self.food_intake_variables[food].varValue
+            food_information.protein
+            * food_information.grams_per_unit
+            * self.food_intake_variables[food_name].varValue
             / self._GRAM_CALCULATION_FACTOR
-            for food, item in zip(
+            for food_name, food_information in zip(
                 self.food_intake_variables.keys(), self.food_information
             )
         )
 
         total_fat_value = sum(
-            self.food_intake_variables[food].varValue
-            * item.grams_per_unit
-            * item.fat
+            self.food_intake_variables[food_name].varValue
+            * food_information.grams_per_unit
+            * food_information.fat
             / self._GRAM_CALCULATION_FACTOR
-            for food, item in zip(
+            for food_name, food_information in zip(
                 self.food_intake_variables.keys(), self.food_information
             )
         )
 
         total_carbohydrate_value = sum(
-            self.food_intake_variables[food].varValue
-            * item.grams_per_unit
-            * item.carbohydrates
+            self.food_intake_variables[food_name].varValue
+            * food_information.grams_per_unit
+            * food_information.carbohydrates
             / self._GRAM_CALCULATION_FACTOR
-            for food, item in zip(
+            for food_name, food_information in zip(
                 self.food_intake_variables.keys(), self.food_information
             )
         )
 
         total_kcal_value = sum(
-            self.food_intake_variables[food].varValue
-            * item.grams_per_unit
-            * item.energy
+            self.food_intake_variables[food_name].varValue
+            * food_information.grams_per_unit
+            * food_information.energy
             / self._GRAM_CALCULATION_FACTOR
-            for food, item in zip(
+            for food_name, food_information in zip(
                 self.food_intake_variables.keys(), self.food_information
             )
         )
@@ -330,8 +330,8 @@ class NutritionOptimizer:
 
     def _calculate_food_intake(self) -> dict:
         food_intake = {
-            food: self.food_intake_variables[food].varValue
-            for food in self.food_intake_variables
+            food_name: self.food_intake_variables[food_name].varValue
+            for food_name in self.food_intake_variables
         }
         return food_intake
 
