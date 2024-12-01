@@ -39,18 +39,17 @@ class NutritionOptimizer:
     def _get_target_for_nutritional_component(
         self, nutritional_component: str
     ) -> float:
-        if nutritional_component == "energy":
-            return self.total_energy
-        elif nutritional_component == "protein":
-            return self.total_protein
-        elif nutritional_component == "fat":
-            return self.total_fat
-        elif nutritional_component == "carbohydrates":
-            return self.total_carbohydrates
-        else:
+        if nutritional_component not in [
+            "energy",
+            "protein",
+            "fat",
+            "carbohydrates",
+        ]:
             raise ValueError(
                 f"Unknown nutritional component: {nutritional_component}"
             )
+
+        return getattr(self, f"total_{nutritional_component}")
 
     def _setup_lp_problem(self) -> None:
         problem = self.objective.problem
