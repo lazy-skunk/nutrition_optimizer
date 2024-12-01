@@ -68,35 +68,24 @@ class NutritionOptimizer:
         self.problem += problem_target, problem_name
 
     def _setup_objective_variables(self) -> None:
-        # TODO: getattr で効率化できるかな。
+        nutrient_names = ["energy", "protein", "fat", "carbohydrates"]
+
         for food_information in self.food_information:
-            self.total_energy += (
-                food_information.energy
-                * food_information.grams_per_unit
-                * self.food_intake_variables[food_information.name]
-                / self._GRAM_CALCULATION_FACTOR
-            )
+            for nutrient in nutrient_names:
+                nutrient_value = getattr(food_information, nutrient)
 
-            self.total_protein += (
-                food_information.protein
-                * food_information.grams_per_unit
-                * self.food_intake_variables[food_information.name]
-                / self._GRAM_CALCULATION_FACTOR
-            )
+                total_value = (
+                    nutrient_value
+                    * food_information.grams_per_unit
+                    * self.food_intake_variables[food_information.name]
+                    / self._GRAM_CALCULATION_FACTOR
+                )
 
-            self.total_fat += (
-                food_information.fat
-                * food_information.grams_per_unit
-                * self.food_intake_variables[food_information.name]
-                / self._GRAM_CALCULATION_FACTOR
-            )
-
-            self.total_carbohydrates += (
-                food_information.carbohydrates
-                * food_information.grams_per_unit
-                * self.food_intake_variables[food_information.name]
-                / self._GRAM_CALCULATION_FACTOR
-            )
+                setattr(
+                    self,
+                    f"total_{nutrient}",
+                    getattr(self, f"total_{nutrient}") + total_value,
+                )
 
     def _get_nutrient_value(self, nutritional_component: str) -> float:
         if nutritional_component == "energy":
