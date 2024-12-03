@@ -40,7 +40,7 @@ class FoodInformation:
             )
 
     def _validate_grams_per_unit_is_greater_than_zero(self) -> None:
-        if self.grams_per_unit > 0:
+        if self.grams_per_unit <= 0:
             raise ValueError(
                 f"Invalid grams_per_unit for {self.name}."
                 " It must be greater than zero."
