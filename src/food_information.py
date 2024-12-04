@@ -47,14 +47,16 @@ class FoodInformation:
             )
 
     def _validate_intake_values_are_non_negative(self) -> None:
-        if self.minimum_intake < 0 or self.maximum_intake < 0:
+        if any(
+            value < 0 for value in [self.minimum_intake, self.maximum_intake]
+        ):
             raise ValueError(
                 f"Invalid intake values for {self.name}."
                 " Both minimum_intake and maximum_intake must be non-negative."
             )
 
     def _validate_minimum_intake_is_less_than_maximum_intake(self) -> None:
-        if not self.minimum_intake < self.maximum_intake:
+        if self.minimum_intake >= self.maximum_intake:
             raise ValueError(
                 f"Invalid intake range for {self.name}."
                 " Maximum_intake must be greater than minimum_intake."
