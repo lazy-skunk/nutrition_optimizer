@@ -36,23 +36,20 @@ class NutritionOptimizer:
                 cat="Integer",
             )
 
-    def _get_target_for_nutritional_component(
-        self, nutritional_component: str
-    ) -> float:
+    def _get_problem_target(self, nutritional_component: str) -> float:
         return getattr(self, f"total_{nutritional_component}")
 
     def _setup_lp_problem(self) -> None:
         problem = self.objective.problem
         nutritional_component = self.objective.nutritional_component
 
+        # TODO: problem の値で getattr したいかも。
         problem_sense = LpMaximize if problem == "maximize" else LpMinimize
         problem_name = f"{problem}_{nutritional_component}"
 
         self.problem = LpProblem(problem_name, problem_sense)
 
-        problem_target = self._get_target_for_nutritional_component(
-            nutritional_component
-        )
+        problem_target = self._get_problem_target(nutritional_component)
 
         self.problem += problem_target, problem_name
 
