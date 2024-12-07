@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from src.food_information import FoodInformation
+
 
 @dataclass(frozen=True)
 class Constraint:
@@ -22,11 +24,13 @@ class Constraint:
             )
 
     def _validate_nutritional_component(self) -> None:
-        valid_components = ["energy", "protein", "fat", "carbohydrates"]
-        if self.nutritional_component not in valid_components:
+        if (
+            self.nutritional_component
+            not in FoodInformation.NUTRIENT_COMPONENTS
+        ):
             raise ValueError(
                 f"Invalid nutritional_component: {self.nutritional_component}."
-                f" Valid components are {valid_components}."
+                f" Valid components are {FoodInformation.NUTRIENT_COMPONENTS}."
             )
 
     def _validate_unit(self) -> None:
