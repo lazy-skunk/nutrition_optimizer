@@ -11,7 +11,7 @@ class Objective:
         self._validate_nutritional_component()
 
     def _validate_problem_type(self) -> None:
-        # TODO: getattr で呼び出せる形式にしたいかも。
+        # TODO: getattr で呼び出せる形式にしたいかも。LpMaximize と LpMinimize で指定するのがいいかな。
         if self.problem not in ["minimize", "maximize"]:
             raise ValueError(
                 f"Invalid problem type: {self.problem}."
