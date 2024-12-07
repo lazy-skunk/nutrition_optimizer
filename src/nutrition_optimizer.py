@@ -72,18 +72,7 @@ class NutritionOptimizer:
                 )
 
     def _get_nutrient_value(self, nutritional_component: str) -> float:
-        if nutritional_component == "energy":
-            return self.total_energy
-        elif nutritional_component == "protein":
-            return self.total_protein
-        elif nutritional_component == "fat":
-            return self.total_fat
-        elif nutritional_component == "carbohydrates":
-            return self.total_carbohydrates
-        else:
-            raise ValueError(
-                f"Unknown nutritional component: {nutritional_component}"
-            )
+        return getattr(self, f"total_{nutritional_component}")
 
     def _apply_amount_or_energy_constraint(
         self,
