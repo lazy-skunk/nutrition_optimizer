@@ -54,10 +54,8 @@ class NutritionOptimizer:
         self.problem += problem_target, problem_name
 
     def _setup_objective_variables(self) -> None:
-        nutrient_names = ["energy", "protein", "fat", "carbohydrates"]
-
         for food_information in self.food_information:
-            for nutrient in nutrient_names:
+            for nutrient in FoodInformation.NUTRIENT_COMPONENTS:
                 nutrient_value = getattr(food_information, nutrient)
 
                 total_value = (

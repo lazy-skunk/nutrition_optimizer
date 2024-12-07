@@ -17,6 +17,7 @@ class FoodInformation:
     PROTEIN_ENERGY_PER_GRAM = 4
     FAT_ENERGY_PER_GRAM = 9
     CARBOHYDRATES_ENERGY_PER_GRAM = 4
+    NUTRIENT_COMPONENTS = ["energy", "protein", "fat", "carbohydrates"]
 
     def __post_init__(self) -> None:
         self._validate_nutrient_values_are_non_negative()
