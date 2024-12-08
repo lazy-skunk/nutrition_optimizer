@@ -36,8 +36,9 @@ class NutritionOptimizer:
                 cat="Integer",
             )
 
-    def _get_problem_target(self, nutritional_component: str) -> float:
-        return getattr(self, f"total_{nutritional_component}")
+    def _get_nutrient_value(self, nutritional_component: str) -> float:
+        nutrient_attribute = f"total_{nutritional_component}"
+        return getattr(self, nutrient_attribute)
 
     def _setup_lp_problem(self) -> None:
         problem = self.objective.problem
@@ -49,7 +50,7 @@ class NutritionOptimizer:
 
         self.problem = LpProblem(problem_name, problem_sense)
 
-        problem_target = self._get_problem_target(nutritional_component)
+        problem_target = self._get_nutrient_value(nutritional_component)
 
         self.problem += problem_target, problem_name
 
@@ -71,9 +72,6 @@ class NutritionOptimizer:
                     nutrient_attribute,
                     getattr(self, nutrient_attribute) + total_value,
                 )
-
-    def _get_nutrient_value(self, nutritional_component: str) -> float:
-        return getattr(self, f"total_{nutritional_component}")
 
     def _apply_amount_or_energy_constraint(
         self,
