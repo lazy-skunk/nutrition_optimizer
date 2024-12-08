@@ -127,33 +127,20 @@ class NutritionOptimizer:
         constraint: Constraint,
     ) -> None:
         nutritional_component = constraint.nutritional_component
+        total_nutrient_value = self._get_nutrient_value(nutritional_component)
 
-        if nutritional_component == "fat":
-            total_fat_energy = (
-                self.total_fat * FoodInformation.FAT_ENERGY_PER_GRAM
-            )
-            self._apply_ratio_constraint_for_nutrient(
-                constraint, total_fat_energy
-            )
-        elif nutritional_component == "protein":
-            total_protein_energy = (
-                self.total_protein * FoodInformation.PROTEIN_ENERGY_PER_GRAM
-            )
-            self._apply_ratio_constraint_for_nutrient(
-                constraint, total_protein_energy
-            )
-        elif nutritional_component == "carbohydrates":
-            total_carbohydrates_energy = (
-                self.total_carbohydrates
-                * FoodInformation.CARBOHYDRATES_ENERGY_PER_GRAM
-            )
-            self._apply_ratio_constraint_for_nutrient(
-                constraint, total_carbohydrates_energy
-            )
-        else:
-            raise ValueError(
-                f"Unknown nutritional component: {nutritional_component}"
-            )
+        nutrient_energy_per_gram_attribute = (
+            f"{nutritional_component.upper()}_ENERGY_PER_GRAM"
+        )
+        nutrient_energy_per_gram = getattr(
+            FoodInformation, nutrient_energy_per_gram_attribute
+        )
+
+        total_nutrient_energy = total_nutrient_value * nutrient_energy_per_gram
+
+        self._apply_ratio_constraint_for_nutrient(
+            constraint, total_nutrient_energy
+        )
 
     def _setup_constraints(self) -> None:
         for constraint in self.constraints:
