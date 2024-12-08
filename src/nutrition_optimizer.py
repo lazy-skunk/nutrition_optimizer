@@ -143,15 +143,16 @@ class NutritionOptimizer:
         )
 
     def _setup_constraints(self) -> None:
+        apply_methods = {
+            "amount": self._apply_amount_or_energy_constraint,
+            "energy": self._apply_amount_or_energy_constraint,
+            "ratio": self._apply_ratio_constraint,
+        }
         for constraint in self.constraints:
             # TODO: 画面側の表現を普通の単位に変えたいかも。Amount(g) とかじゃなくて g だけの方が直感的かも。
             unit = constraint.unit
-            if unit in ["amount", "energy"]:
-                self._apply_amount_or_energy_constraint(constraint)
-            elif unit == "ratio":
-                self._apply_ratio_constraint(constraint)
-            else:
-                raise ValueError(f"Unknown unit: {unit}")
+            apply_method = apply_methods[unit]
+            apply_method(constraint)
 
     def _calculate_total_nutrients(self, nutrient_property: str) -> float:
         return sum(
