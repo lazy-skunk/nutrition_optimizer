@@ -67,10 +67,11 @@ class NutritionOptimizer:
                 )
 
                 nutrient_attribute = f"total_{nutrient}"
+                current_value = getattr(self, nutrient_attribute)
                 setattr(
                     self,
                     nutrient_attribute,
-                    getattr(self, nutrient_attribute) + total_value,
+                    current_value + total_value,
                 )
 
     def _apply_amount_or_energy_constraint(
