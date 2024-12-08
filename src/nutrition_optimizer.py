@@ -45,6 +45,7 @@ class NutritionOptimizer:
         nutritional_component = self.objective.nutritional_component
 
         # TODO: problem の値で getattr したいかも。
+        # problem_sense = getattr(pulp, problem)
         problem_sense = LpMaximize if problem == "maximize" else LpMinimize
         problem_name = f"{problem}_{nutritional_component}"
 
