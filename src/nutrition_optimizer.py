@@ -65,10 +65,11 @@ class NutritionOptimizer:
                     / self._GRAM_CALCULATION_FACTOR
                 )
 
+                nutrient_attribute = f"total_{nutrient}"
                 setattr(
                     self,
-                    f"total_{nutrient}",
-                    getattr(self, f"total_{nutrient}") + total_value,
+                    nutrient_attribute,
+                    getattr(self, nutrient_attribute) + total_value,
                 )
 
     def _get_nutrient_value(self, nutritional_component: str) -> float:
