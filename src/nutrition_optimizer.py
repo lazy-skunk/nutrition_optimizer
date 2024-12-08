@@ -109,6 +109,7 @@ class NutritionOptimizer:
             constraint.value / self._GRAM_CALCULATION_FACTOR
         )
 
+        # TODO: 制約を辞書で管理してみたい。
         if min_max == "max":
             self.problem += (
                 nutrient_energy
