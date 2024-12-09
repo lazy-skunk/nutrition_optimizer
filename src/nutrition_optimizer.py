@@ -178,7 +178,6 @@ class NutritionOptimizer:
         total_carbohydrate_value: float,
         total_kcal_value: float,
     ) -> dict:
-        # TODO: おや？ここも改良できるな。冗長だ。
         protein_ratio = (
             total_protein_value
             * FoodInformation.PROTEIN_ENERGY_PER_GRAM
