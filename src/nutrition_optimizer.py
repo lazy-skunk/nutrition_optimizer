@@ -93,9 +93,10 @@ class NutritionOptimizer:
             "max": lambda nutrient_value, value: nutrient_value <= value,
             "min": lambda nutrient_value, value: nutrient_value >= value,
         }
-        comparison_function = constraint_operations[min_max]
+        constraint_operation = constraint_operations[min_max]
+
         self.problem += (
-            comparison_function(nutrient_value, value),
+            constraint_operation(nutrient_value, value),
             problem_name,
         )
 
@@ -114,19 +115,18 @@ class NutritionOptimizer:
             constraint.value / self._GRAM_CALCULATION_FACTOR
         )
 
-        # TODO: 制約を辞書で管理してみたい。
-        if min_max == "max":
-            self.problem += (
-                nutrient_energy
-                <= self.total_energy * calculation_factor_value,
-                problem_name,
-            )
-        elif min_max == "min":
-            self.problem += (
-                nutrient_energy
-                >= self.total_energy * calculation_factor_value,
-                problem_name,
-            )
+        comparison_operations = {
+            "max": lambda nutrient_energy: nutrient_energy
+            <= self.total_energy * calculation_factor_value,
+            "min": lambda nutrient_energy: nutrient_energy
+            >= self.total_energy * calculation_factor_value,
+        }
+        comparison_operation = comparison_operations[min_max]
+
+        self.problem += (
+            comparison_operation(nutrient_energy),
+            problem_name,
+        )
 
     def _apply_ratio_constraint(
         self,
