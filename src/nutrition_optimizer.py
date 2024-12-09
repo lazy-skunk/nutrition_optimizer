@@ -89,10 +89,15 @@ class NutritionOptimizer:
 
         problem_name = f"{min_max}_{nutritional_component}_{unit}"
 
-        if min_max == "max":
-            self.problem += (nutrient_value <= value, problem_name)
-        elif min_max == "min":
-            self.problem += (nutrient_value >= value, problem_name)
+        constraint_operations = {
+            "max": lambda nutrient_value, value: nutrient_value <= value,
+            "min": lambda nutrient_value, value: nutrient_value >= value,
+        }
+        comparison_function = constraint_operations[min_max]
+        self.problem += (
+            comparison_function(nutrient_value, value),
+            problem_name,
+        )
 
     def _apply_ratio_constraint_for_nutrient(
         self,
