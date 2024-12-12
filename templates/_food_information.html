@@ -3,6 +3,7 @@
   <thead class="table-dark">
     <tr>
       <th scope="col">Food Name</th>
+      <th scope="col">Grams Per Unit (g)</th>
       <th scope="col">Minimum Intake (g)</th>
       <th scope="col">Maximum Intake (g)</th>
       <th scope="col">Energy (kcal/100g)</th>
@@ -41,6 +42,14 @@
     <tr>
       <td>
         <input type="text" class="form-control" name="food-name" value="rice" />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-grams-per-unit"
+          value="1"
+        />
       </td>
       <td>
         <input
@@ -100,6 +109,14 @@
         <input
           type="number"
           class="form-control"
+          name="food-grams-per-unit"
+          value="40"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
           name="food-minimum-intake"
           value="150"
         />
@@ -148,6 +165,14 @@
           class="form-control"
           name="food-name"
           value="boiled_egg"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-grams-per-unit"
+          value="50"
         />
       </td>
       <td>
@@ -213,6 +238,14 @@
         <input
           type="number"
           class="form-control"
+          name="food-grams-per-unit"
+          value="15"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
           name="food-minimum-intake"
           value="45"
         />
@@ -261,6 +294,14 @@
           class="form-control"
           name="food-name"
           value="xplosion"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          class="form-control"
+          name="food-grams-per-unit"
+          value="30"
         />
       </td>
       <td>
@@ -323,6 +364,9 @@
   <tr>
     <td>
       <input type="text" class="form-control" name="food-name" />
+    </td>
+    <td>
+      <input type="number" class="form-control" name="food-grams-per-unit" />
     </td>
     <td>
       <input type="number" class="form-control" name="food-minimum-intake" />
