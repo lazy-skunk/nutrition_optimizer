@@ -10,7 +10,14 @@ from src.objective import Objective
 class Utilities:
     @staticmethod
     def _camel_to_snake(camel_case_str: str) -> str:
-        return re.sub(r"([a-z])([A-Z])", r"\1_\2", camel_case_str).lower()
+        CAMEL_TO_SNAKE_PATTERN = r"([a-z])([A-Z])"
+        REPLACEMENT_STRING = r"\1_\2"
+
+        snake_case_str = re.sub(
+            CAMEL_TO_SNAKE_PATTERN, REPLACEMENT_STRING, camel_case_str
+        ).lower()
+
+        return snake_case_str
 
     @staticmethod
     def _convert_to_food_information(data: list) -> list:
