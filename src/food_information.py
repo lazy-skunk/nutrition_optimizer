@@ -9,10 +9,9 @@ class FoodInformation:
     fat: float
     carbohydrates: float
 
+    grams_per_unit: int
     minimum_intake: int
     maximum_intake: int
-    # TODO: 1個当たりのグラム数は画面から入力できるように調整すること。
-    grams_per_unit: int = 1
 
     PROTEIN_ENERGY_PER_GRAM = 4
     FAT_ENERGY_PER_GRAM = 9
@@ -57,7 +56,7 @@ class FoodInformation:
             )
 
     def _validate_minimum_intake_is_less_than_maximum_intake(self) -> None:
-        if self.minimum_intake >= self.maximum_intake:
+        if self.minimum_intake > self.maximum_intake:
             raise ValueError(
                 f"Invalid intake range for {self.name}."
                 " Maximum_intake must be greater than minimum_intake."

@@ -35,10 +35,13 @@ async function submitForm() {
     document.querySelectorAll("#food-inputs tr")
   ).map((item) => ({
     name: item.querySelector("[name='food-name']").value,
-    minimumIntake: parseFloat(
+    gramsPerUnit: parseInt(
+      item.querySelector("[name='food-grams-per-unit']").value
+    ),
+    minimumIntake: parseInt(
       item.querySelector("[name='food-minimum-intake']").value
     ),
-    maximumIntake: parseFloat(
+    maximumIntake: parseInt(
       item.querySelector("[name='food-maximum-intake']").value
     ),
     energy: parseFloat(item.querySelector("[name='food-energy']").value),
