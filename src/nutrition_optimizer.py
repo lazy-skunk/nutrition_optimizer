@@ -182,9 +182,11 @@ class NutritionOptimizer:
         total_values = {}
 
         for nutrient_component in FoodInformation.NUTRIENT_COMPONENTS:
-            total_values[nutrient_component] = self._calculate_total_nutrients(
+            nutrient_value = self._calculate_total_nutrients(
                 nutrient_component
             )
+            rounded_nutrient_value = round(nutrient_value, 1)
+            total_values[nutrient_component] = rounded_nutrient_value
 
         return total_values
 
@@ -210,7 +212,9 @@ class NutritionOptimizer:
                 total_nutrient_value * energy_per_gram / total_energy_value
             ) * self._GRAM_CALCULATION_FACTOR
 
-            pfc_ratios[nutrient_component] = ratio
+            rounded_ratio = round(ratio, 1)
+
+            pfc_ratios[nutrient_component] = rounded_ratio
 
         return pfc_ratios
 
