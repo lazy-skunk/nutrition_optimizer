@@ -190,30 +190,46 @@ class NutritionOptimizer:
 
         return total_values
 
+    def _get_energy_per_gram(self, nutrient_component: str) -> float:
+        energy_per_gram_attribute = (
+            f"{nutrient_component.upper()}_ENERGY_PER_GRAM"
+        )
+        return getattr(FoodInformation, energy_per_gram_attribute)
+
+    def _total_energy_recalculated_from_nutrients(
+        self, total_values: dict
+    ) -> float:
+        recalculated_total_energy = 0
+        for nutrient_component in FoodInformation.NUTRIENT_COMPONENTS:
+            if nutrient_component == "energy":
+                continue
+
+            energy_per_gram = self._get_energy_per_gram(nutrient_component)
+            recalculated_total_energy += (
+                total_values[nutrient_component] * energy_per_gram
+            )
+
+        return recalculated_total_energy
+
     def _calculate_pfc_ratios(self, total_values: dict) -> dict:
         pfc_ratios = {}
-        total_energy_value = total_values["energy"]
+        recalculated_total_energy = (
+            self._total_energy_recalculated_from_nutrients(total_values)
+        )
 
         for nutrient_component in FoodInformation.NUTRIENT_COMPONENTS:
             if nutrient_component == "energy":
                 continue
 
             total_nutrient_value = total_values[nutrient_component]
-
-            energy_per_gram_attribute = (
-                f"{nutrient_component.upper()}_ENERGY_PER_GRAM"
-            )
-            energy_per_gram = getattr(
-                FoodInformation,
-                energy_per_gram_attribute,
-            )
+            energy_per_gram = self._get_energy_per_gram(nutrient_component)
 
             ratio = (
-                total_nutrient_value * energy_per_gram / total_energy_value
+                total_nutrient_value
+                * energy_per_gram
+                / recalculated_total_energy
             ) * self._GRAM_CALCULATION_FACTOR
-
             rounded_ratio = round(ratio, 1)
-
             pfc_ratios[nutrient_component] = rounded_ratio
 
         return pfc_ratios
@@ -228,13 +244,13 @@ class NutritionOptimizer:
         solution_result = LpStatus[self.problem.status]
         if solution_result == "Optimal":
             food_intake = self._calculate_food_intake()
-            pfc_kcal_total_values = self._calculate_total_nutrient_values()
-            pfc_ratio = self._calculate_pfc_ratios(pfc_kcal_total_values)
+            pfc_energy_total_values = self._calculate_total_nutrient_values()
+            pfc_ratio = self._calculate_pfc_ratios(pfc_energy_total_values)
 
             return {
                 "status": solution_result,
                 "food_intake": food_intake,
-                "pfc_kcal_total_values": pfc_kcal_total_values,
+                "pfc_energy_total_values": pfc_energy_total_values,
                 "pfc_ratio": pfc_ratio,
             }
         else:
