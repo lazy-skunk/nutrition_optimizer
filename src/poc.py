@@ -24,25 +24,6 @@ FOODS = {
 }
 
 
-# rice_grams = LpVariable("米の量", lowBound=200, upBound=800, cat="Integer")
-# chicken_fillet_units = LpVariable(
-#     "ささみの数", lowBound=150, upBound=300, cat="Integer"
-# )
-# boiled_egg_units = LpVariable(
-#     "ゆで卵の数", lowBound=150, upBound=200, cat="Integer"
-# )
-# broccoli_units = LpVariable(
-#     "ブロッコリーの数", lowBound=45, upBound=90, cat="Integer"
-# )
-# xplosion_units = LpVariable(
-#     "プロテインの数", lowBound=90, upBound=120, cat="Integer"
-# )
-
-# CHICKEN_FILLET_GRAMS_PER_UNIT = 1
-# BOILED_EGG_GRAMS_PER_UNIT = 1
-# BROCCOLI_GRAMS_PER_UNIT = 1
-# XPLOSION_GRAMS_PER_UNIT = 1
-
 rice_grams = LpVariable("米の量", lowBound=200, upBound=800, cat="Integer")
 chicken_fillet_units = LpVariable(
     "ささみの数", lowBound=6, upBound=8, cat="Integer"
@@ -233,17 +214,25 @@ if LpStatus[problem.status] == "Optimal":
 
     print("###")
     PROTEIN_KCAL_PER_GRAM = 4
-    print(
-        f"たんぱく質割合: {GRAM_CALCULATION_FACTOR * (total_protein_value * PROTEIN_KCAL_PER_GRAM) / total_kcal_value:.1f}%"
-    )
     FAT_KCAL_PER_GRAM = 9
-    print(
-        f"脂質割合: {GRAM_CALCULATION_FACTOR * (total_fat_value * FAT_KCAL_PER_GRAM) / total_kcal_value:.1f}%"
-    )
     CARBOHYDRATE_KCAL_PER_GRAM = 4
-    print(
-        f"炭水化物割合: {GRAM_CALCULATION_FACTOR * (total_carbohydrate_value * CARBOHYDRATE_KCAL_PER_GRAM) / total_kcal_value:.1f}%"
+
+    total_protein_kcal = total_protein_value * PROTEIN_KCAL_PER_GRAM
+    total_fat_kcal = total_fat_value * FAT_KCAL_PER_GRAM
+    total_carbohydrate_kcal = (
+        total_carbohydrate_value * CARBOHYDRATE_KCAL_PER_GRAM
     )
+
+    total_calories = (
+        total_protein_kcal + total_fat_kcal + total_carbohydrate_kcal
+    )
+    protein_ratio = total_protein_kcal / total_calories * 100
+    fat_ratio = total_fat_kcal / total_calories * 100
+    carbohydrate_ratio = total_carbohydrate_kcal / total_calories * 100
+
+    print(f"たんぱく質割合: {round(protein_ratio, 1)}%")
+    print(f"脂質割合: {round(fat_ratio, 1)}%")
+    print(f"炭水化物割合: {round(carbohydrate_ratio, 1)}%")
 else:
     print(
         "最適解が見つかりませんでした。制約条件を見直すことで最適解が見つかる場合があります。"
