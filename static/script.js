@@ -78,6 +78,23 @@ function getConstraints() {
 }
 
 function drawPFCRatio(pfcRatio) {
+  const nutrientComponents = ["protein", "fat", "carbohydrates"];
+  const colors = [
+    "rgb(255, 128, 128)",
+    "rgb(128, 255, 128)",
+    "rgb(128, 128, 255)",
+  ];
+
+  const data = nutrientComponents.map((nutrient, index) => {
+    const capitalizedNutrient =
+      nutrient.charAt(0).toUpperCase() + nutrient.slice(1);
+    return {
+      name: capitalizedNutrient,
+      y: parseFloat(pfcRatio[nutrient]),
+      color: colors[index],
+    };
+  });
+
   Highcharts.chart("pfc-ratio-chart", {
     chart: {
       type: "pie",
@@ -89,23 +106,7 @@ function drawPFCRatio(pfcRatio) {
       {
         name: "PFC Ratio",
         colorByPoint: true,
-        data: [
-          {
-            name: "Protein",
-            y: parseFloat(pfcRatio.protein),
-            color: "rgb(255, 128, 128)",
-          },
-          {
-            name: "Fat",
-            y: parseFloat(pfcRatio.fat),
-            color: "rgb(128, 255, 128)",
-          },
-          {
-            name: "Carbohydrates",
-            y: parseFloat(pfcRatio.carbohydrates),
-            color: "rgb(128, 128, 255)",
-          },
-        ],
+        data: data,
       },
     ],
   });
