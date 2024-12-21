@@ -77,6 +77,40 @@ function getConstraints() {
   );
 }
 
+function drawPFCRatio(pfcRatio) {
+  Highcharts.chart("pfc-ratio-chart", {
+    chart: {
+      type: "pie",
+    },
+    title: {
+      text: "PFC Ratio",
+    },
+    series: [
+      {
+        name: "PFC Ratio",
+        colorByPoint: true,
+        data: [
+          {
+            name: "Protein",
+            y: parseFloat(pfcRatio.protein),
+            color: "rgb(255, 128, 128)",
+          },
+          {
+            name: "Fat",
+            y: parseFloat(pfcRatio.fat),
+            color: "rgb(128, 255, 128)",
+          },
+          {
+            name: "Carbohydrates",
+            y: parseFloat(pfcRatio.carbohydrates),
+            color: "rgb(128, 128, 255)",
+          },
+        ],
+      },
+    ],
+  });
+}
+
 async function submitForm() {
   const foodInformation = getFoodInformation();
   const objective = getObjective();
@@ -98,4 +132,7 @@ async function submitForm() {
     null,
     4
   );
+
+  // TODO: submitForm のメソッド以上の処理を行っている。
+  drawPFCRatio(result.pfc_ratio);
 }
