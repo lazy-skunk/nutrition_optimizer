@@ -112,6 +112,40 @@ function drawPFCRatio(pfcRatio) {
   });
 }
 
+function drawFoodIntake(foodIntake) {
+  const data = Object.keys(foodIntake).map((food) => ({
+    name: food,
+    y: foodIntake[food],
+  }));
+
+  Highcharts.chart("food-intake-chart", {
+    chart: {
+      type: "bar",
+    },
+    title: {
+      text: "Food Intake",
+    },
+    xAxis: {
+      categories: data.map((item) => item.name),
+      title: {
+        text: "Food Item",
+      },
+    },
+    yAxis: {
+      title: {
+        text: "Units",
+      },
+    },
+    series: [
+      {
+        name: "Food Intake",
+        data: data.map((item) => item.y),
+        color: "rgb(128, 128, 255)",
+      },
+    ],
+  });
+}
+
 async function submitForm() {
   const foodInformation = getFoodInformation();
   const objective = getObjective();
@@ -136,4 +170,5 @@ async function submitForm() {
 
   // TODO: submitForm のメソッド以上の処理を行っている。
   drawPFCRatio(result.pfc_ratio);
+  drawFoodIntake(result.food_intake);
 }
