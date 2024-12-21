@@ -16,7 +16,7 @@ def optimize() -> Response:
     try:
         parsed_data = Utilities.parse_request_data(request)
 
-        food_information = parsed_data["food_information_list"]
+        food_information = parsed_data["food_information"]
         objective = parsed_data["objective"]
         constraints = parsed_data["constraints"]
 

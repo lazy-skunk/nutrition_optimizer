@@ -59,7 +59,7 @@ class Utilities:
                 return {"status": "InvalidRequest", "result": {}}
 
             food_information_request_data = request.json.get("foodInformation")
-            food_information_list = Utilities._convert_to_food_information(
+            food_information = Utilities._convert_to_food_information(
                 food_information_request_data
             )
 
@@ -72,7 +72,7 @@ class Utilities:
             )
 
             return {
-                "food_information_list": food_information_list,
+                "food_information": food_information,
                 "objective": objective,
                 "constraints": constraint_list,
             }
