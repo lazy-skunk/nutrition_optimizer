@@ -30,47 +30,57 @@ function updateUnitOptions(select) {
   }
 }
 
+function getFoodInformation() {
+  return Array.from(document.querySelectorAll("#food-inputs tr")).map(
+    (item) => ({
+      name: item.querySelector("[name='food-name']").value,
+      gramsPerUnit: parseInt(
+        item.querySelector("[name='food-grams-per-unit']").value
+      ),
+      minimumIntake: parseInt(
+        item.querySelector("[name='food-minimum-intake']").value
+      ),
+      maximumIntake: parseInt(
+        item.querySelector("[name='food-maximum-intake']").value
+      ),
+      energy: parseFloat(item.querySelector("[name='food-energy']").value),
+      protein: parseFloat(item.querySelector("[name='food-protein']").value),
+      fat: parseFloat(item.querySelector("[name='food-fat']").value),
+      carbohydrates: parseFloat(
+        item.querySelector("[name='food-carbohydrates']").value
+      ),
+    })
+  );
+}
+
+function getObjective() {
+  return Array.from(document.querySelectorAll("#objective-inputs tr")).map(
+    (row) => ({
+      problem: row.querySelector("[name='objective-problem']").value,
+      nutritionalComponent: row.querySelector(
+        "[name='objective-nutritional-component']"
+      ).value,
+    })
+  );
+}
+
+function getConstraints() {
+  return Array.from(document.querySelectorAll("#constraint-inputs tr")).map(
+    (row) => ({
+      minMax: row.querySelector("[name='constraint-min-max']").value,
+      nutritionalComponent: row.querySelector(
+        "[name='constraint-nutritional-component']"
+      ).value,
+      unit: row.querySelector("[name='constraint-unit']").value,
+      value: parseFloat(row.querySelector("[name='constraint-value']").value),
+    })
+  );
+}
+
 async function submitForm() {
-  const foodInformation = Array.from(
-    document.querySelectorAll("#food-inputs tr")
-  ).map((item) => ({
-    name: item.querySelector("[name='food-name']").value,
-    gramsPerUnit: parseInt(
-      item.querySelector("[name='food-grams-per-unit']").value
-    ),
-    minimumIntake: parseInt(
-      item.querySelector("[name='food-minimum-intake']").value
-    ),
-    maximumIntake: parseInt(
-      item.querySelector("[name='food-maximum-intake']").value
-    ),
-    energy: parseFloat(item.querySelector("[name='food-energy']").value),
-    protein: parseFloat(item.querySelector("[name='food-protein']").value),
-    fat: parseFloat(item.querySelector("[name='food-fat']").value),
-    carbohydrates: parseFloat(
-      item.querySelector("[name='food-carbohydrates']").value
-    ),
-  }));
-
-  const objective = Array.from(
-    document.querySelectorAll("#objective-inputs tr")
-  ).map((row) => ({
-    problem: row.querySelector("[name='objective-problem']").value,
-    nutritionalComponent: row.querySelector(
-      "[name='objective-nutritional-component']"
-    ).value,
-  }));
-
-  const constraints = Array.from(
-    document.querySelectorAll("#constraint-inputs tr")
-  ).map((row) => ({
-    minMax: row.querySelector("[name='constraint-min-max']").value,
-    nutritionalComponent: row.querySelector(
-      "[name='constraint-nutritional-component']"
-    ).value,
-    unit: row.querySelector("[name='constraint-unit']").value,
-    value: parseFloat(row.querySelector("[name='constraint-value']").value),
-  }));
+  const foodInformation = getFoodInformation();
+  const objective = getObjective();
+  const constraints = getConstraints();
 
   const response = await fetch("/optimize", {
     method: "POST",
