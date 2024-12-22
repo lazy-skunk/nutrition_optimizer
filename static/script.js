@@ -152,6 +152,24 @@ function drawFoodIntake(foodIntake) {
   });
 }
 
+function handleOptimizationResult(result) {
+  if (result.status === "Optimal") {
+    drawPFCRatioWithTotalEnergy(
+      result.pfc_ratio,
+      result.pfc_energy_total_values
+    );
+    drawFoodIntake(result.food_intake);
+  } else {
+    clearCharts();
+    alert("status: " + result.status + "\n" + "message: " + result.message);
+  }
+}
+
+function clearCharts() {
+  document.getElementById("food-intake-chart").textContent = "";
+  document.getElementById("pfc-ratio-chart").textContent = "";
+}
+
 async function submitForm() {
   const foodInformation = getFoodInformation();
   const objective = getObjective();
@@ -169,16 +187,5 @@ async function submitForm() {
 
   const result = await response.json();
 
-  // TODO: submitForm のメソッド以上の処理を行っている。
-  if (result.status === "Optimal") {
-    drawPFCRatioWithTotalEnergy(
-      result.pfc_ratio,
-      result.pfc_energy_total_values
-    );
-    drawFoodIntake(result.food_intake);
-  } else {
-    document.getElementById("food-intake-chart").textContent = "";
-    document.getElementById("pfc-ratio-chart").textContent = "";
-    alert("status: " + result.status + "\n" + "message: " + result.message);
-  }
+  handleOptimizationResult(result);
 }
