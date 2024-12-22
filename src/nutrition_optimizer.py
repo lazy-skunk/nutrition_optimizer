@@ -21,7 +21,6 @@ class NutritionOptimizer:
         self.food_intake_variables: dict[str, LpVariable] = {}
         self.problem: LpProblem
 
-        # TODO: この辺は配列か辞書にまとめて簡単にしたいかも。
         self.total_energy: float = 0.0
         self.total_protein: float = 0.0
         self.total_fat: float = 0.0
@@ -44,8 +43,6 @@ class NutritionOptimizer:
         problem = self.objective.problem
         nutritional_component = self.objective.nutritional_component
 
-        # TODO: problem の値で getattr したいかも。
-        # problem_sense = getattr(pulp, problem)
         problem_sense = LpMaximize if problem == "maximize" else LpMinimize
         problem_name = f"{problem}_{nutritional_component}"
 
