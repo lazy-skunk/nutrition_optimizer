@@ -22,8 +22,8 @@ class Constraint:
     def _validate_min_max(self) -> None:
         if self.min_max not in self.MIN_MAX:
             raise ValueError(
-                f"Invalid min_max value: {self.min_max}."
-                " Valid values are 'min' or 'max'."
+                f"Invalid Min/Max value: {self.min_max}."
+                f" Valid values are {Constraint.MIN_MAX}."
             )
 
     def _validate_nutritional_component(self) -> None:
@@ -32,7 +32,7 @@ class Constraint:
             not in FoodInformation.NUTRIENT_COMPONENTS
         ):
             raise ValueError(
-                f"Invalid nutritional_component: {self.nutritional_component}."
+                f"Invalid nutritional component: {self.nutritional_component}."
                 f" Valid components are {FoodInformation.NUTRIENT_COMPONENTS}."
             )
 
@@ -40,9 +40,11 @@ class Constraint:
         if self.unit not in self.UNITS:
             raise ValueError(
                 f"Invalid unit: {self.unit}."
-                " Valid units are 'amount', 'energy', or 'ratio'."
+                f" Valid units are {Constraint.UNITS}."
             )
 
     def _validate_value_is_non_negative(self) -> None:
         if self.value is None or self.value < 0:
-            raise ValueError(f"Value must be non-negative. Got {self.value}.")
+            raise ValueError(
+                f"Constraint value must be non-negative. Got {self.value}."
+            )
