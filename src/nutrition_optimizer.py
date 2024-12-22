@@ -155,7 +155,6 @@ class NutritionOptimizer:
             "ratio": self._apply_ratio_constraint,
         }
         for constraint in self.constraints:
-            # TODO: 画面側の表現を普通の単位に変えたいかも。Amount(g) とかじゃなくて g だけの方が直感的かも。
             unit = constraint.unit
             apply_method = apply_methods[unit]
             apply_method(constraint)

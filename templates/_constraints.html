@@ -10,7 +10,7 @@
     </tr>
   </thead>
   <tbody id="constraint-inputs">
-    <!-- <tr>
+    <tr>
       <td>
         <select class="form-select" name="constraint-min-max">
           <option value="min">Minimum</option>
@@ -26,152 +26,16 @@
           <option value="energy">Energy</option>
           <option value="protein">Protein</option>
           <option value="fat">Fat</option>
-          <option value="carbohydrate">Carbohydrates</option>
+          <option value="carbohydrates">Carbohydrates</option>
         </select>
       </td>
       <td>
         <select class="form-select" name="constraint-unit" disabled>
-          <option value="energy" selected>Energy (kcal)</option>
+          <option value="energy">kcal</option>
         </select>
       </td>
       <td>
         <input type="number" class="form-control" name="constraint-value" />
-      </td>
-      <td class="no-action"></td>
-    </tr> -->
-    <tr>
-      <td>
-        <select class="form-select" name="constraint-min-max">
-          <option value="min">Minimum</option>
-          <option value="max" selected>Maximum</option>
-        </select>
-      </td>
-      <td>
-        <select
-          class="form-select"
-          name="constraint-nutritional-component"
-          onchange="updateUnitOptions(this)"
-        >
-          <option value="energy">Energy</option>
-          <option value="protein">Protein</option>
-          <option value="fat">Fat</option>
-          <option value="carbohydrate">Carbohydrates</option>
-        </select>
-      </td>
-      <td>
-        <select class="form-select" name="constraint-unit">
-          <option value="energy" selected>Energy (kcal)</option>
-        </select>
-      </td>
-      <td>
-        <input
-          type="number"
-          class="form-control"
-          name="constraint-value"
-          value="1700"
-        />
-      </td>
-      <td class="no-action"></td>
-    </tr>
-    <tr>
-      <td>
-        <select class="form-select" name="constraint-min-max">
-          <option value="min">Minimum</option>
-          <option value="max" selected>Maximum</option>
-        </select>
-      </td>
-      <td>
-        <select
-          class="form-select"
-          name="constraint-nutritional-component"
-          onchange="updateUnitOptions(this)"
-        >
-          <option value="energy">Energy</option>
-          <option value="protein" selected>Protein</option>
-          <option value="fat">Fat</option>
-          <option value="carbohydrate">Carbohydrates</option>
-        </select>
-      </td>
-      <td>
-        <select class="form-select" name="constraint-unit">
-          <option value="amount">Amount (g)</option>
-        </select>
-      </td>
-      <td>
-        <input
-          type="number"
-          class="form-control"
-          name="constraint-value"
-          value="160"
-        />
-      </td>
-      <td class="no-action"></td>
-    </tr>
-    <tr>
-      <td>
-        <select class="form-select" name="constraint-min-max">
-          <option value="min" selected>Minimum</option>
-          <option value="max">Maximum</option>
-        </select>
-      </td>
-      <td>
-        <select
-          class="form-select"
-          name="constraint-nutritional-component"
-          onchange="updateUnitOptions(this)"
-        >
-          <option value="energy">Energy</option>
-          <option value="protein" selected>Protein</option>
-          <option value="fat">Fat</option>
-          <option value="carbohydrate">Carbohydrates</option>
-        </select>
-      </td>
-      <td>
-        <select class="form-select" name="constraint-unit">
-          <option value="amount">Amount (g)</option>
-        </select>
-      </td>
-      <td>
-        <input
-          type="number"
-          class="form-control"
-          name="constraint-value"
-          value="150"
-        />
-      </td>
-      <td class="no-action"></td>
-    </tr>
-    <tr>
-      <td>
-        <select class="form-select" name="constraint-min-max">
-          <option value="min">Minimum</option>
-          <option value="max" selected>Maximum</option>
-        </select>
-      </td>
-      <td>
-        <select
-          class="form-select"
-          name="constraint-nutritional-component"
-          onchange="updateUnitOptions(this)"
-        >
-          <option value="energy">Energy</option>
-          <option value="protein">Protein</option>
-          <option value="fat" selected>Fat</option>
-          <option value="carbohydrate">Carbohydrates</option>
-        </select>
-      </td>
-      <td>
-        <select class="form-select" name="constraint-unit">
-          <option value="ratio">Ratio (%)</option>
-        </select>
-      </td>
-      <td>
-        <input
-          type="number"
-          class="form-control"
-          name="constraint-value"
-          value="20"
-        />
       </td>
       <td class="no-action"></td>
     </tr>
@@ -203,12 +67,12 @@
         <option value="energy">Energy</option>
         <option value="protein">Protein</option>
         <option value="fat">Fat</option>
-        <option value="carbohydrate">Carbohydrates</option>
+        <option value="carbohydrates">Carbohydrates</option>
       </select>
     </td>
     <td>
       <select class="form-select" name="constraint-unit" disabled>
-        <option value="energy" selected>Energy (kcal)</option>
+        <option value="energy">Energy (kcal)</option>
       </select>
     </td>
     <td>
