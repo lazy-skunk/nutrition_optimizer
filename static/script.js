@@ -16,15 +16,15 @@ function updateUnitOptions(select) {
     .querySelector("[name='constraint-unit']");
 
   if (nutritionalComponent.value === "energy") {
-    unitSelect.innerHTML = `<option value="energy">Energy (kcal)</option>`;
+    unitSelect.innerHTML = `<option value="energy">kcal</option>`;
     unitSelect.disabled = true;
   } else {
     unitSelect.disabled = false;
 
     if (!unitSelect.querySelector("option[value='amount']")) {
       unitSelect.innerHTML = `
-        <option value="amount">Amount (g)</option>
-        <option value="ratio">Ratio (%)</option>
+        <option value="amount">g</option>
+        <option value="ratio">%</option>
       `;
     }
   }
