@@ -77,7 +77,7 @@ function getConstraints() {
   );
 }
 
-function drawPFCRatio(pfcRatio) {
+function drawPFCRatioWithTotalEnergy(pfcRatio, pfcEnergyTotalValues) {
   const nutrientComponents = ["protein", "fat", "carbohydrates"];
   const colors = [
     "rgb(255, 128, 128)",
@@ -88,9 +88,12 @@ function drawPFCRatio(pfcRatio) {
   const data = nutrientComponents.map((nutrient, index) => {
     const capitalizedNutrient =
       nutrient.charAt(0).toUpperCase() + nutrient.slice(1);
+    const grams = pfcEnergyTotalValues[nutrient];
+    const ratio = parseFloat(pfcRatio[nutrient]);
+
     return {
-      name: capitalizedNutrient,
-      y: parseFloat(pfcRatio[nutrient]),
+      name: `${capitalizedNutrient} (${grams}g)`,
+      y: ratio,
       color: colors[index],
     };
   });
@@ -101,6 +104,9 @@ function drawPFCRatio(pfcRatio) {
     },
     title: {
       text: "PFC Ratio",
+    },
+    subtitle: {
+      text: `Total Energy: ${pfcEnergyTotalValues.energy} kcal`,
     },
     series: [
       {
@@ -162,13 +168,17 @@ async function submitForm() {
   });
 
   const result = await response.json();
-  document.getElementById("result").textContent = JSON.stringify(
-    result,
-    null,
-    4
-  );
 
   // TODO: submitForm のメソッド以上の処理を行っている。
-  drawPFCRatio(result.pfc_ratio);
-  drawFoodIntake(result.food_intake);
+  if (result.status === "Optimal") {
+    drawPFCRatioWithTotalEnergy(
+      result.pfc_ratio,
+      result.pfc_energy_total_values
+    );
+    drawFoodIntake(result.food_intake);
+  } else {
+    document.getElementById("food-intake-chart").textContent = "";
+    document.getElementById("pfc-ratio-chart").textContent = "";
+    alert("status: " + result.status + "\n" + "message: " + result.message);
+  }
 }
