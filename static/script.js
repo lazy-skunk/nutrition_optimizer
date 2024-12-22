@@ -15,18 +15,18 @@ function updateUnitOptions(select) {
     .closest("tr")
     .querySelector("[name='constraint-unit']");
 
+  unitSelect.innerHTML = "";
+
   if (nutritionalComponent.value === "energy") {
-    unitSelect.innerHTML = `<option value="energy">kcal</option>`;
+    const energyTemplate = document.getElementById("unit-options-energy");
+    unitSelect.appendChild(energyTemplate.content.cloneNode(true));
     unitSelect.disabled = true;
   } else {
     unitSelect.disabled = false;
-
-    if (!unitSelect.querySelector("option[value='amount']")) {
-      unitSelect.innerHTML = `
-        <option value="amount">g</option>
-        <option value="ratio">%</option>
-      `;
-    }
+    const amountRatioTemplate = document.getElementById(
+      "unit-options-amount-ratio"
+    );
+    unitSelect.appendChild(amountRatioTemplate.content.cloneNode(true));
   }
 }
 
