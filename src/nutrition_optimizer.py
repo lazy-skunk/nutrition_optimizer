@@ -254,4 +254,8 @@ class NutritionOptimizer:
                 "pfc_ratio": pfc_ratio,
             }
         else:
-            return {"status": solution_result}
+            return {
+                "status": solution_result,
+                "message": "Please review the constraints,"
+                " the grams per unit, or the intake values.",
+            }
