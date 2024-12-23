@@ -1,27 +1,32 @@
 from dataclasses import dataclass
 
+from src.food_information import FoodInformation
+
 
 @dataclass(frozen=True)
 class Objective:
-    problem: str
+    objective_sense: str
     nutritional_component: str
+
+    OBJECTIVE_SENSES = ["minimize", "maximize"]
 
     def __post_init__(self) -> None:
         self._validate_problem_type()
         self._validate_nutritional_component()
 
     def _validate_problem_type(self) -> None:
-        # TODO: getattr で呼び出せる形式にしたいかも。LpMaximize と LpMinimize で指定するのがいいかな。
-        if self.problem not in ["minimize", "maximize"]:
+        if self.objective_sense not in self.OBJECTIVE_SENSES:
             raise ValueError(
-                f"Invalid problem type: {self.problem}."
-                " Valid values are 'minimize' or 'maximize'."
+                f"Invalid objective sense: {self.objective_sense}."
+                f" Valid values are {self.OBJECTIVE_SENSES}."
             )
 
     def _validate_nutritional_component(self) -> None:
-        valid_components = ["energy", "protein", "fat", "carbohydrates"]
-        if self.nutritional_component not in valid_components:
+        if (
+            self.nutritional_component
+            not in FoodInformation.NUTRIENT_COMPONENTS
+        ):
             raise ValueError(
                 f"Invalid nutritional component: {self.nutritional_component}."
-                f" Valid components are {valid_components}."
+                f" Valid components are {FoodInformation.NUTRIENT_COMPONENTS}."
             )

@@ -56,7 +56,7 @@ function getFoodInformation() {
 function getObjective() {
   return Array.from(document.querySelectorAll("#objective-inputs tr")).map(
     (row) => ({
-      problem: row.querySelector("[name='objective-problem']").value,
+      objectiveSense: row.querySelector("[name='objective-sense']").value,
       nutritionalComponent: row.querySelector(
         "[name='objective-nutritional-component']"
       ).value,
