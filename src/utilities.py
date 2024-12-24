@@ -20,6 +20,16 @@ class Utilities:
         return snake_case_str
 
     @staticmethod
+    def _snake_to_camel(snake_case_str: str) -> str:
+        SNAKE = "_"
+
+        words = snake_case_str.split(SNAKE)
+        return "".join(
+            word.capitalize() if word_count != 0 else word
+            for word_count, word in enumerate(words)
+        )
+
+    @staticmethod
     def _convert_to_food_information(data: list) -> list:
         return [
             FoodInformation(
@@ -56,7 +66,10 @@ class Utilities:
     def parse_request_data(request: Request) -> dict:
         try:
             if request is None or request.json is None:
-                return {"status": "InvalidRequest", "result": {}}
+                return {
+                    "status": "InvalidRequest",
+                    "message": "Unexpected error has occuered",
+                }
 
             food_information_request_data = request.json.get("foodInformation")
             food_information = Utilities._convert_to_food_information(
@@ -78,3 +91,10 @@ class Utilities:
             }
         except Exception as e:
             raise ValueError(f"Error processing request data: {str(e)}")
+
+    @staticmethod
+    def convert_keys_to_camel_case(response: dict) -> dict:
+        return {
+            Utilities._snake_to_camel(key): value
+            for key, value in response.items()
+        }

@@ -14,18 +14,19 @@ def index() -> str:
 @app.route("/optimize", methods=["POST"])
 def optimize() -> Response:
     try:
-        parsed_data = Utilities.parse_request_data(request)
+        parsed_request = Utilities.parse_request_data(request)
 
-        food_information = parsed_data["food_information"]
-        objective = parsed_data["objective"]
-        constraints = parsed_data["constraints"]
+        food_information = parsed_request["food_information"]
+        objective = parsed_request["objective"]
+        constraints = parsed_request["constraints"]
 
         nutrition_optimizer = NutritionOptimizer(
             food_information, objective, constraints
         )
         result = nutrition_optimizer.solve()
 
-        return jsonify(result)
+        parsed_result = Utilities.convert_keys_to_camel_case(result)
+        return jsonify(parsed_result)
     except Exception as e:
         return jsonify({"status": "Error", "message": str(e)})
 

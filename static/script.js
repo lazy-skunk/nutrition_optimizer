@@ -154,11 +154,8 @@ function drawFoodIntake(foodIntake) {
 
 function handleOptimizationResult(result) {
   if (result.status === "Optimal") {
-    drawPFCRatioWithTotalEnergy(
-      result.pfc_ratio,
-      result.pfc_energy_total_values
-    );
-    drawFoodIntake(result.food_intake);
+    drawPFCRatioWithTotalEnergy(result.pfcRatio, result.pfcEnergyTotalValues);
+    drawFoodIntake(result.foodIntake);
   } else {
     clearCharts();
     alert("status: " + result.status + "\n" + "message: " + result.message);
