@@ -1,4 +1,5 @@
 import re
+from typing import Type
 
 from flask import Request
 
@@ -30,9 +31,9 @@ class Utilities:
         )
 
     @staticmethod
-    def _convert_to_food_information(data: list) -> list:
+    def _convert_to_generic(data: list, cls: Type) -> list:
         return [
-            FoodInformation(
+            cls(
                 **{
                     Utilities._camel_to_snake(key): value
                     for key, value in item.items()
@@ -51,44 +52,28 @@ class Utilities:
         )
 
     @staticmethod
-    def _convert_to_constraints(data: list) -> list:
-        return [
-            Constraint(
-                **{
-                    Utilities._camel_to_snake(key): value
-                    for key, value in item.items()
-                }
-            )
-            for item in data
-        ]
-
-    @staticmethod
-    def parse_request_data(request: Request) -> dict:
+    def parse_request_data(request: Request) -> tuple:
         try:
             if request is None or request.json is None:
-                return {
-                    "status": "InvalidRequest",
-                    "message": "Unexpected error has occuered",
-                }
+                raise ValueError(
+                    "Error processing request data: InvalidRequest"
+                )
 
-            food_information_request_data = request.json.get("foodInformation")
-            food_information = Utilities._convert_to_food_information(
-                food_information_request_data
+            food_information_request = request.json.get("foodInformation")
+            food_information = Utilities._convert_to_generic(
+                food_information_request, FoodInformation
             )
 
-            objective_request_data = request.json.get("objective")[0]
-            objective = Utilities._convert_to_objective(objective_request_data)
+            # There is always only one objective.
+            objective_request = request.json.get("objective")[0]
+            objective = Utilities._convert_to_objective(objective_request)
 
-            constraints_request_data = request.json.get("constraints")
-            constraint_list = Utilities._convert_to_constraints(
-                constraints_request_data
+            constraints_request = request.json.get("constraints")
+            constraints = Utilities._convert_to_generic(
+                constraints_request, Constraint
             )
 
-            return {
-                "food_information": food_information,
-                "objective": objective,
-                "constraints": constraint_list,
-            }
+            return (food_information, objective, constraints)
         except Exception as e:
             raise ValueError(f"Error processing request data: {str(e)}")
 

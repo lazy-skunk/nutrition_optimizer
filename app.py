@@ -14,11 +14,9 @@ def index() -> str:
 @app.route("/optimize", methods=["POST"])
 def optimize() -> Response:
     try:
-        parsed_request = Utilities.parse_request_data(request)
-
-        food_information = parsed_request["food_information"]
-        objective = parsed_request["objective"]
-        constraints = parsed_request["constraints"]
+        food_information, objective, constraints = (
+            Utilities.parse_request_data(request)
+        )
 
         nutrition_optimizer = NutritionOptimizer(
             food_information, objective, constraints
