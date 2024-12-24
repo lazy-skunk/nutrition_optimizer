@@ -40,17 +40,17 @@ class NutritionOptimizer:
         return getattr(self, nutrient_attribute)
 
     def _setup_lp_problem(self) -> None:
-        problem = self.objective.objective_sense
+        objective_sense = self.objective.objective_sense
         nutritional_component = self.objective.nutritional_component
 
-        problem_sense = LpMaximize if problem == "maximize" else LpMinimize
-        problem_name = f"{problem}_{nutritional_component}"
+        objective = LpMaximize if objective_sense == "maximize" else LpMinimize
+        objective_name = f"{objective_sense}_{nutritional_component}"
 
-        self.problem = LpProblem(problem_name, problem_sense)
+        self.problem = LpProblem(objective_name, objective)
 
-        problem_target = self._get_nutrient_value(nutritional_component)
+        objective_target = self._get_nutrient_value(nutritional_component)
 
-        self.problem += problem_target, problem_name
+        self.problem += objective_target, objective_name
 
     def _setup_objective_variables(self) -> None:
         for food_information in self.food_information:
