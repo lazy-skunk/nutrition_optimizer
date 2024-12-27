@@ -146,22 +146,28 @@ interface Objective {
   nutritionalComponent: string;
 }
 
-function getObjective(): Objective[] {
-  return Array.from(document.querySelectorAll("#objective-inputs tr")).map(
-    (row) => {
-      const objectiveSenseElement = row.querySelector(
-        "[name='objective-sense']"
-      ) as HTMLInputElement;
-      const nutritionalComponentElement = row.querySelector(
-        "[name='objective-nutritional-component']"
-      ) as HTMLInputElement;
+function getObjective(): Objective {
+  const row = document.querySelector("#objective-inputs tr");
 
-      return {
-        objectiveSense: objectiveSenseElement.value,
-        nutritionalComponent: nutritionalComponentElement.value,
-      };
-    }
-  );
+  if (!row) {
+    throw new Error("Row element not found.");
+  }
+
+  const objectiveSenseInput = row.querySelector(
+    "[name='objective-sense']"
+  ) as HTMLInputElement;
+  const nutritionalComponentInput = row.querySelector(
+    "[name='objective-nutritional-component']"
+  ) as HTMLInputElement;
+
+  if (!objectiveSenseInput || !nutritionalComponentInput) {
+    throw new Error("Required input elements not found in the row.");
+  }
+
+  return {
+    objectiveSense: objectiveSenseInput.value,
+    nutritionalComponent: nutritionalComponentInput.value,
+  };
 }
 
 interface Constraint {

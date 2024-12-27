@@ -92,14 +92,19 @@ function getFoodInformation() {
     });
 }
 function getObjective() {
-    return Array.from(document.querySelectorAll("#objective-inputs tr")).map((row) => {
-        const objectiveSenseElement = row.querySelector("[name='objective-sense']");
-        const nutritionalComponentElement = row.querySelector("[name='objective-nutritional-component']");
-        return {
-            objectiveSense: objectiveSenseElement.value,
-            nutritionalComponent: nutritionalComponentElement.value,
-        };
-    });
+    const row = document.querySelector("#objective-inputs tr");
+    if (!row) {
+        throw new Error("Row element not found.");
+    }
+    const objectiveSenseInput = row.querySelector("[name='objective-sense']");
+    const nutritionalComponentInput = row.querySelector("[name='objective-nutritional-component']");
+    if (!objectiveSenseInput || !nutritionalComponentInput) {
+        throw new Error("Required input elements not found in the row.");
+    }
+    return {
+        objectiveSense: objectiveSenseInput.value,
+        nutritionalComponent: nutritionalComponentInput.value,
+    };
 }
 function getConstraints() {
     return Array.from(document.querySelectorAll("#constraint-inputs tr")).map((row) => {
