@@ -87,41 +87,56 @@ interface FoodInformation {
 }
 
 function getFoodInformation(): FoodInformation[] {
-  return Array.from(document.querySelectorAll("#food-inputs tr")).map((row) => {
-    const nameElement = row.querySelector(
+  const rows = document.querySelectorAll("#food-inputs tr");
+
+  return Array.from(rows).map((row) => {
+    const nameInput = row.querySelector(
       "[name='food-name']"
     ) as HTMLInputElement;
-    const gramsPerUnitElement = row.querySelector(
+    const gramsPerUnitInput = row.querySelector(
       "[name='food-grams-per-unit']"
     ) as HTMLInputElement;
-    const minimumIntakeElement = row.querySelector(
+    const minimumIntakeInput = row.querySelector(
       "[name='food-minimum-intake']"
     ) as HTMLInputElement;
-    const maximumIntakeElement = row.querySelector(
+    const maximumIntakeInput = row.querySelector(
       "[name='food-maximum-intake']"
     ) as HTMLInputElement;
-    const energyElement = row.querySelector(
+    const energyInput = row.querySelector(
       "[name='food-energy']"
     ) as HTMLInputElement;
-    const proteinElement = row.querySelector(
+    const proteinInput = row.querySelector(
       "[name='food-protein']"
     ) as HTMLInputElement;
-    const fatElement = row.querySelector(
-      "[name='food-fat']"
-    ) as HTMLInputElement;
-    const carbohydratesElement = row.querySelector(
+    const fatInput = row.querySelector("[name='food-fat']") as HTMLInputElement;
+    const carbohydratesInput = row.querySelector(
       "[name='food-carbohydrates']"
     ) as HTMLInputElement;
 
+    if (
+      !nameInput ||
+      !gramsPerUnitInput ||
+      !minimumIntakeInput ||
+      !maximumIntakeInput ||
+      !energyInput ||
+      !proteinInput ||
+      !fatInput ||
+      !carbohydratesInput
+    ) {
+      throw new Error(
+        "One or more required input elements not found in the row."
+      );
+    }
+
     return {
-      name: nameElement.value,
-      gramsPerUnit: parseInt(gramsPerUnitElement.value),
-      minimumIntake: parseInt(minimumIntakeElement.value),
-      maximumIntake: parseInt(maximumIntakeElement.value),
-      energy: parseFloat(energyElement.value),
-      protein: parseFloat(proteinElement.value),
-      fat: parseFloat(fatElement.value),
-      carbohydrates: parseFloat(carbohydratesElement.value),
+      name: nameInput.value,
+      gramsPerUnit: parseInt(gramsPerUnitInput.value),
+      minimumIntake: parseInt(minimumIntakeInput.value),
+      maximumIntake: parseInt(maximumIntakeInput.value),
+      energy: parseFloat(energyInput.value),
+      protein: parseFloat(proteinInput.value),
+      fat: parseFloat(fatInput.value),
+      carbohydrates: parseFloat(carbohydratesInput.value),
     };
   });
 }
