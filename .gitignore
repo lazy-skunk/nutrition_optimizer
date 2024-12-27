@@ -4,5 +4,6 @@ __pycache__
 data
 htmlcov
 node_modules
-.coverage
 scripts
+*.map
+.coverage
