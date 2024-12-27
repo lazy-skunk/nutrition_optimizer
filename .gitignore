@@ -3,6 +3,7 @@ __pycache__
 .pytest_cache
 data
 htmlcov
+log
 node_modules
 scripts
 *.map
