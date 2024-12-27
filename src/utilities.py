@@ -64,8 +64,7 @@ class Utilities:
                 food_information_request, FoodInformation
             )
 
-            # There is always only one objective.
-            objective_request = request.json.get("objective")[0]
+            objective_request = request.json.get("objective")
             objective = Utilities._convert_to_objective(objective_request)
 
             constraints_request = request.json.get("constraints")
