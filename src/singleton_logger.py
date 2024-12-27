@@ -8,7 +8,7 @@ _DEFAULT_LOG_SIZE = 1024 * 1024 * 5
 _DEFAULT_LOG_BACKUP = 5
 
 
-class SingletonLogger(object):
+class SingletonLogger:
     _instance: Optional["SingletonLogger"] = None
     _logger: Optional[logging.Logger] = None
 
