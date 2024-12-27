@@ -107,16 +107,23 @@ function getObjective() {
     };
 }
 function getConstraints() {
-    return Array.from(document.querySelectorAll("#constraint-inputs tr")).map((row) => {
-        const minMaxElement = row.querySelector("[name='constraint-min-max']");
-        const nutritionalComponentElement = row.querySelector("[name='constraint-nutritional-component']");
-        const unitElement = row.querySelector("[name='constraint-unit']");
-        const valueElement = row.querySelector("[name='constraint-value']");
+    const rows = document.querySelectorAll("#constraint-inputs tr");
+    return Array.from(rows).map((row) => {
+        const minMaxInput = row.querySelector("[name='constraint-min-max']");
+        const nutritionalComponentInput = row.querySelector("[name='constraint-nutritional-component']");
+        const unitInput = row.querySelector("[name='constraint-unit']");
+        const valueInput = row.querySelector("[name='constraint-value']");
+        if (!minMaxInput ||
+            !nutritionalComponentInput ||
+            !unitInput ||
+            !valueInput) {
+            throw new Error("Required input elements not found in the row.");
+        }
         return {
-            minMax: minMaxElement.value,
-            nutritionalComponent: nutritionalComponentElement.value,
-            unit: unitElement.value,
-            value: parseFloat(valueElement.value),
+            minMax: minMaxInput.value,
+            nutritionalComponent: nutritionalComponentInput.value,
+            unit: unitInput.value,
+            value: parseFloat(valueInput.value),
         };
     });
 }

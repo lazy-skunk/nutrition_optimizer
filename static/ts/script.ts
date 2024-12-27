@@ -178,29 +178,37 @@ interface Constraint {
 }
 
 function getConstraints(): Constraint[] {
-  return Array.from(document.querySelectorAll("#constraint-inputs tr")).map(
-    (row) => {
-      const minMaxElement = row.querySelector(
-        "[name='constraint-min-max']"
-      ) as HTMLInputElement;
-      const nutritionalComponentElement = row.querySelector(
-        "[name='constraint-nutritional-component']"
-      ) as HTMLInputElement;
-      const unitElement = row.querySelector(
-        "[name='constraint-unit']"
-      ) as HTMLInputElement;
-      const valueElement = row.querySelector(
-        "[name='constraint-value']"
-      ) as HTMLInputElement;
+  const rows = document.querySelectorAll("#constraint-inputs tr");
+  return Array.from(rows).map((row) => {
+    const minMaxInput = row.querySelector(
+      "[name='constraint-min-max']"
+    ) as HTMLInputElement;
+    const nutritionalComponentInput = row.querySelector(
+      "[name='constraint-nutritional-component']"
+    ) as HTMLInputElement;
+    const unitInput = row.querySelector(
+      "[name='constraint-unit']"
+    ) as HTMLInputElement;
+    const valueInput = row.querySelector(
+      "[name='constraint-value']"
+    ) as HTMLInputElement;
 
-      return {
-        minMax: minMaxElement.value,
-        nutritionalComponent: nutritionalComponentElement.value,
-        unit: unitElement.value,
-        value: parseFloat(valueElement.value),
-      };
+    if (
+      !minMaxInput ||
+      !nutritionalComponentInput ||
+      !unitInput ||
+      !valueInput
+    ) {
+      throw new Error("Required input elements not found in the row.");
     }
-  );
+
+    return {
+      minMax: minMaxInput.value,
+      nutritionalComponent: nutritionalComponentInput.value,
+      unit: unitInput.value,
+      value: parseFloat(valueInput.value),
+    };
+  });
 }
 
 interface PFCRatio {
