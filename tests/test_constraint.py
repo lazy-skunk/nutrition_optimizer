@@ -5,7 +5,7 @@ import pytest
 from src.constraint import Constraint
 
 
-def test_constraint_valid_input() -> None:
+def test_valid_constraint() -> None:
     constraint = Constraint(
         min_max="min",
         nutritional_component="protein",
@@ -19,7 +19,7 @@ def test_constraint_valid_input() -> None:
     assert constraint.value == 10
 
 
-def test_constraint_invalid_min_max() -> None:
+def test_invalid_min_max() -> None:
     with pytest.raises(
         ValueError,
         match=re.escape(
@@ -35,7 +35,7 @@ def test_constraint_invalid_min_max() -> None:
         )
 
 
-def test_constraint_invalid_nutritional_component() -> None:
+def test_invalid_nutritional_component() -> None:
     with pytest.raises(
         ValueError,
         match=re.escape(
@@ -52,7 +52,7 @@ def test_constraint_invalid_nutritional_component() -> None:
         )
 
 
-def test_constraint_invalid_unit() -> None:
+def test_invalid_unit() -> None:
     with pytest.raises(
         ValueError,
         match=re.escape(
@@ -68,7 +68,7 @@ def test_constraint_invalid_unit() -> None:
         )
 
 
-def test_constraint_negative_value() -> None:
+def test_negative_value() -> None:
     with pytest.raises(
         ValueError, match="Constraint value must be non-negative. Got -1."
     ):
@@ -80,7 +80,7 @@ def test_constraint_negative_value() -> None:
         )
 
 
-def test_constraint_zero_value() -> None:
+def test_zero_value() -> None:
     constraint = Constraint(
         min_max="min",
         nutritional_component="protein",
