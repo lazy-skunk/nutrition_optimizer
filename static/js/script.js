@@ -1,188 +1,209 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 function addItem(templateId, targetId) {
-  const template = document.getElementById(templateId).content.cloneNode(true);
-  document.getElementById(targetId).appendChild(template);
+    const templateElement = document.getElementById(templateId);
+    const targetElement = document.getElementById(targetId);
+    if (templateElement && targetElement) {
+        const template = templateElement.content.cloneNode(true);
+        targetElement.appendChild(template);
+    }
+    else {
+        console.error(`Element with ID "${templateId}" or "${targetId}" not found.`);
+    }
 }
-
 function removeItem(button) {
-  button.closest("tr").remove();
+    var _a;
+    (_a = button.closest("tr")) === null || _a === void 0 ? void 0 : _a.remove();
 }
-
 function updateUnitOptions(select) {
-  const nutritionalComponent = select
-    .closest("tr")
-    .querySelector("[name='constraint-nutritional-component']");
-  const unitSelect = select
-    .closest("tr")
-    .querySelector("[name='constraint-unit']");
-
-  unitSelect.innerHTML = "";
-
-  if (nutritionalComponent.value === "energy") {
-    const energyTemplate = document.getElementById("unit-options-energy");
-    unitSelect.appendChild(energyTemplate.content.cloneNode(true));
-    unitSelect.disabled = true;
-  } else {
-    unitSelect.disabled = false;
-    const amountRatioTemplate = document.getElementById(
-      "unit-options-amount-ratio"
-    );
-    unitSelect.appendChild(amountRatioTemplate.content.cloneNode(true));
-  }
+    const row = select.closest("tr");
+    const nutritionalComponent = row === null || row === void 0 ? void 0 : row.querySelector("[name='constraint-nutritional-component']");
+    const unitSelect = row === null || row === void 0 ? void 0 : row.querySelector("[name='constraint-unit']");
+    if (!nutritionalComponent) {
+        console.error("nutritionalComponent not found");
+        return;
+    }
+    if (!unitSelect) {
+        console.error("unitSelect not found");
+        return;
+    }
+    unitSelect.innerHTML = "";
+    if (nutritionalComponent.textContent === "energy") {
+        const energyTemplate = document.getElementById("unit-options-energy");
+        if (energyTemplate) {
+            unitSelect.appendChild(energyTemplate.content.cloneNode(true));
+        }
+        unitSelect.disabled = true;
+    }
+    else {
+        unitSelect.disabled = false;
+        const amountRatioTemplate = document.getElementById("unit-options-amount-ratio");
+        unitSelect.appendChild(amountRatioTemplate.content.cloneNode(true));
+    }
 }
-
 function getFoodInformation() {
-  return Array.from(document.querySelectorAll("#food-inputs tr")).map(
-    (item) => ({
-      name: item.querySelector("[name='food-name']").value,
-      gramsPerUnit: parseInt(
-        item.querySelector("[name='food-grams-per-unit']").value
-      ),
-      minimumIntake: parseInt(
-        item.querySelector("[name='food-minimum-intake']").value
-      ),
-      maximumIntake: parseInt(
-        item.querySelector("[name='food-maximum-intake']").value
-      ),
-      energy: parseFloat(item.querySelector("[name='food-energy']").value),
-      protein: parseFloat(item.querySelector("[name='food-protein']").value),
-      fat: parseFloat(item.querySelector("[name='food-fat']").value),
-      carbohydrates: parseFloat(
-        item.querySelector("[name='food-carbohydrates']").value
-      ),
-    })
-  );
+    return Array.from(document.querySelectorAll("#food-inputs tr")).map((row) => {
+        const nameElement = row.querySelector("[name='food-name']");
+        const gramsPerUnitElement = row.querySelector("[name='food-grams-per-unit']");
+        const minimumIntakeElement = row.querySelector("[name='food-minimum-intake']");
+        const maximumIntakeElement = row.querySelector("[name='food-maximum-intake']");
+        const energyElement = row.querySelector("[name='food-energy']");
+        const proteinElement = row.querySelector("[name='food-protein']");
+        const fatElement = row.querySelector("[name='food-fat']");
+        const carbohydratesElement = row.querySelector("[name='food-carbohydrates']");
+        return {
+            name: nameElement.value,
+            gramsPerUnit: parseInt(gramsPerUnitElement.value),
+            minimumIntake: parseInt(minimumIntakeElement.value),
+            maximumIntake: parseInt(maximumIntakeElement.value),
+            energy: parseFloat(energyElement.value),
+            protein: parseFloat(proteinElement.value),
+            fat: parseFloat(fatElement.value),
+            carbohydrates: parseFloat(carbohydratesElement.value),
+        };
+    });
 }
-
 function getObjective() {
-  return Array.from(document.querySelectorAll("#objective-inputs tr")).map(
-    (row) => ({
-      objectiveSense: row.querySelector("[name='objective-sense']").value,
-      nutritionalComponent: row.querySelector(
-        "[name='objective-nutritional-component']"
-      ).value,
-    })
-  );
+    return Array.from(document.querySelectorAll("#objective-inputs tr")).map((row) => {
+        const objectiveSenseElement = row.querySelector("[name='objective-sense']");
+        const nutritionalComponentElement = row.querySelector("[name='objective-nutritional-component']");
+        return {
+            objectiveSense: objectiveSenseElement.value,
+            nutritionalComponent: nutritionalComponentElement.value,
+        };
+    });
 }
-
 function getConstraints() {
-  return Array.from(document.querySelectorAll("#constraint-inputs tr")).map(
-    (row) => ({
-      minMax: row.querySelector("[name='constraint-min-max']").value,
-      nutritionalComponent: row.querySelector(
-        "[name='constraint-nutritional-component']"
-      ).value,
-      unit: row.querySelector("[name='constraint-unit']").value,
-      value: parseFloat(row.querySelector("[name='constraint-value']").value),
-    })
-  );
+    return Array.from(document.querySelectorAll("#constraint-inputs tr")).map((row) => {
+        const minMaxElement = row.querySelector("[name='constraint-min-max']");
+        const nutritionalComponentElement = row.querySelector("[name='constraint-nutritional-component']");
+        const unitElement = row.querySelector("[name='constraint-unit']");
+        const valueElement = row.querySelector("[name='constraint-value']");
+        return {
+            minMax: minMaxElement.value,
+            nutritionalComponent: nutritionalComponentElement.value,
+            unit: unitElement.value,
+            value: parseFloat(valueElement.value),
+        };
+    });
 }
-
 function drawPFCRatioWithTotalEnergy(pfcRatio, pfcEnergyTotalValues) {
-  const nutrientComponents = ["protein", "fat", "carbohydrates"];
-  const colors = [
-    "rgb(255, 128, 128)",
-    "rgb(128, 255, 128)",
-    "rgb(128, 128, 255)",
-  ];
-
-  const data = nutrientComponents.map((nutrient, index) => {
-    const capitalizedNutrient =
-      nutrient.charAt(0).toUpperCase() + nutrient.slice(1);
-    const grams = pfcEnergyTotalValues[nutrient];
-    const ratio = parseFloat(pfcRatio[nutrient]);
-
-    return {
-      name: `${capitalizedNutrient} (${grams}g)`,
-      y: ratio,
-      color: colors[index],
-    };
-  });
-
-  Highcharts.chart("pfc-ratio-chart", {
-    chart: {
-      type: "pie",
-    },
-    title: {
-      text: "PFC Ratio",
-    },
-    subtitle: {
-      text: `Total Energy: ${pfcEnergyTotalValues.energy} kcal`,
-    },
-    series: [
-      {
-        name: "PFC Ratio",
-        colorByPoint: true,
-        data: data,
-      },
-    ],
-  });
+    const nutrientComponents = ["protein", "fat", "carbohydrates"];
+    const colors = [
+        "rgb(255, 128, 128)",
+        "rgb(128, 255, 128)",
+        "rgb(128, 128, 255)",
+    ];
+    const data = nutrientComponents.map((nutrient, index) => {
+        const capitalizedNutrient = nutrient.charAt(0).toUpperCase() + nutrient.slice(1);
+        const grams = pfcEnergyTotalValues[nutrient];
+        const ratio = pfcRatio[nutrient];
+        return {
+            name: `${capitalizedNutrient} (${grams}g)`,
+            y: ratio,
+            color: colors[index],
+        };
+    });
+    Highcharts.chart("pfc-ratio-chart", {
+        chart: {
+            type: "pie",
+        },
+        title: {
+            text: "PFC Ratio",
+        },
+        tooltip: {
+            valueSuffix: "%",
+        },
+        subtitle: {
+            text: `Total Energy: ${pfcEnergyTotalValues.energy} kcal`,
+        },
+        series: [
+            {
+                name: "Percentage",
+                colorByPoint: true,
+                data: data,
+            },
+        ],
+    });
 }
-
 function drawFoodIntake(foodIntake) {
-  const data = Object.keys(foodIntake).map((food) => ({
-    name: food,
-    y: foodIntake[food],
-  }));
-
-  Highcharts.chart("food-intake-chart", {
-    chart: {
-      type: "bar",
-    },
-    title: {
-      text: "Food Intake",
-    },
-    xAxis: {
-      categories: data.map((item) => item.name),
-      title: {
-        text: "Food Item",
-      },
-    },
-    yAxis: {
-      title: {
-        text: "Units",
-      },
-    },
-    series: [
-      {
-        name: "Food Intake",
-        data: data.map((item) => item.y),
-        color: "rgb(128, 128, 255)",
-      },
-    ],
-  });
+    const data = Object.keys(foodIntake).map((food) => ({
+        name: food,
+        y: foodIntake[food],
+    }));
+    Highcharts.chart("food-intake-chart", {
+        chart: {
+            type: "bar",
+        },
+        title: {
+            text: "Food Intake",
+        },
+        xAxis: {
+            categories: data.map((item) => item.name),
+            title: {
+                text: "Food Item",
+            },
+        },
+        yAxis: {
+            title: {
+                text: "Units",
+            },
+        },
+        series: [
+            {
+                name: "Food Intake",
+                data: data.map((item) => item.y),
+                color: "rgb(128, 128, 255)",
+            },
+        ],
+    });
 }
-
 function handleOptimizationResult(result) {
-  if (result.status === "Optimal") {
-    drawPFCRatioWithTotalEnergy(result.pfcRatio, result.pfcEnergyTotalValues);
-    drawFoodIntake(result.foodIntake);
-  } else {
-    clearCharts();
-    alert("status: " + result.status + "\n" + "message: " + result.message);
-  }
+    if (result.status === "Optimal") {
+        drawPFCRatioWithTotalEnergy(result.pfcRatio, result.pfcEnergyTotalValues);
+        drawFoodIntake(result.foodIntake);
+    }
+    else {
+        clearCharts();
+        alert("status: " + result.status + "\n" + "message: " + result.message);
+    }
 }
-
 function clearCharts() {
-  document.getElementById("food-intake-chart").textContent = "";
-  document.getElementById("pfc-ratio-chart").textContent = "";
+    const foodIntakeChart = document.getElementById("food-intake-chart");
+    const pfcRatioChart = document.getElementById("pfc-ratio-chart");
+    if (!foodIntakeChart) {
+        throw new Error("Food intake chart not found.");
+    }
+    if (!pfcRatioChart) {
+        throw new Error("PFC ratio chart not found.");
+    }
+    foodIntakeChart.textContent = "";
+    pfcRatioChart.textContent = "";
 }
-
-async function submitForm() {
-  const foodInformation = getFoodInformation();
-  const objective = getObjective();
-  const constraints = getConstraints();
-
-  const response = await fetch("/optimize", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      foodInformation,
-      objective,
-      constraints,
-    }),
-  });
-
-  const result = await response.json();
-
-  handleOptimizationResult(result);
+function submitForm() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const foodInformation = getFoodInformation();
+        const objective = getObjective();
+        const constraints = getConstraints();
+        const response = yield fetch("/optimize", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                foodInformation,
+                objective,
+                constraints,
+            }),
+        });
+        const result = yield response.json();
+        handleOptimizationResult(result);
+    });
 }
+//# sourceMappingURL=script.js.map
