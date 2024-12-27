@@ -29,27 +29,32 @@ function removeItem(button) {
 }
 function updateUnitOptions(select) {
     const row = select.closest("tr");
-    const nutritionalComponent = row === null || row === void 0 ? void 0 : row.querySelector("[name='constraint-nutritional-component']");
-    const unitSelect = row === null || row === void 0 ? void 0 : row.querySelector("[name='constraint-unit']");
-    if (!nutritionalComponent) {
-        console.error("nutritionalComponent not found");
-        return;
+    if (!row) {
+        throw new Error("Row element not found.");
+    }
+    const nutritionalComponentSelect = row.querySelector("[name='constraint-nutritional-component']");
+    const unitSelect = row.querySelector("[name='constraint-unit']");
+    if (!nutritionalComponentSelect) {
+        throw new Error("Nutritional component select element not found in row.");
     }
     if (!unitSelect) {
-        console.error("unitSelect not found");
-        return;
+        throw new Error("Unit select element not found in row.");
     }
     unitSelect.innerHTML = "";
-    if (nutritionalComponent.textContent === "energy") {
+    if (nutritionalComponentSelect.textContent === "energy") {
         const energyTemplate = document.getElementById("unit-options-energy");
-        if (energyTemplate) {
-            unitSelect.appendChild(energyTemplate.content.cloneNode(true));
+        if (!energyTemplate) {
+            throw new Error("energyTemplate with ID 'unit-options-energy' not found.");
         }
+        unitSelect.appendChild(energyTemplate.content.cloneNode(true));
         unitSelect.disabled = true;
     }
     else {
         unitSelect.disabled = false;
         const amountRatioTemplate = document.getElementById("unit-options-amount-ratio");
+        if (!amountRatioTemplate) {
+            throw new Error("amountRatioTemplate with ID 'unit-options-amount-ratio' not found.");
+        }
         unitSelect.appendChild(amountRatioTemplate.content.cloneNode(true));
     }
 }
