@@ -21,8 +21,11 @@ function addItem(templateId, targetId) {
     targetElement.appendChild(template);
 }
 function removeItem(button) {
-    var _a;
-    (_a = button.closest("tr")) === null || _a === void 0 ? void 0 : _a.remove();
+    const row = button.closest("tr");
+    if (!row) {
+        throw new Error("Row element not found.");
+    }
+    row.remove();
 }
 function updateUnitOptions(select) {
     const row = select.closest("tr");

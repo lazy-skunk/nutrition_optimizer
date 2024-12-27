@@ -15,8 +15,14 @@ function addItem(templateId: string, targetId: string): void {
   targetElement.appendChild(template);
 }
 
-function removeItem(button: HTMLTableRowElement): void {
-  button.closest("tr")?.remove();
+function removeItem(button: HTMLButtonElement): void {
+  const row = button.closest("tr");
+
+  if (!row) {
+    throw new Error("Row element not found.");
+  }
+
+  row.remove();
 }
 
 function updateUnitOptions(select: HTMLSelectElement) {
