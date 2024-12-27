@@ -1,9 +1,20 @@
 from flask import Flask, Response, jsonify, render_template, request
+from flask.cli import load_dotenv
 
 from src.nutrition_optimizer import NutritionOptimizer
+from src.singleton_logger import SingletonLogger
 from src.utilities import Utilities
 
-app = Flask(__name__)
+
+def create_app() -> Flask:
+    load_dotenv()
+    SingletonLogger.initialize()
+
+    app = Flask(__name__)
+    return app
+
+
+app = create_app()
 
 
 @app.route("/")
