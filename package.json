@@ -1,0 +1,22 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "ユーザーが入力した食品情報と制約に基づいて、目的のPFCバランス（たんぱく質、脂質や炭水化物の割合）を達成するための最適な摂取量を算出するアプリケーションです。  \r 健康維持、ダイエット、筋肉増量などの目的に合わせて食事を管理しましょう。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/highcharts": "^5.0.44",
+    "@types/node": "^16.0.0",
+    "typescript": "^4.4.0"
+  }
+}
