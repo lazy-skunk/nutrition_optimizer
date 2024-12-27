@@ -167,7 +167,7 @@ function drawPFCRatioWithTotalEnergy(pfcRatio, pfcEnergyTotalValues) {
     });
 }
 function drawFoodIntake(foodIntake) {
-    const data = Object.keys(foodIntake).map((food) => ({
+    const foodIntakeData = Object.keys(foodIntake).map((food) => ({
         name: food,
         y: foodIntake[food],
     }));
@@ -179,7 +179,7 @@ function drawFoodIntake(foodIntake) {
             text: "Food Intake",
         },
         xAxis: {
-            categories: data.map((item) => item.name),
+            categories: foodIntakeData.map((item) => item.name),
             title: {
                 text: "Food Item",
             },
@@ -192,7 +192,7 @@ function drawFoodIntake(foodIntake) {
         series: [
             {
                 name: "Food Intake",
-                data: data.map((item) => item.y),
+                data: foodIntakeData.map((item) => item.y),
                 color: "rgb(128, 128, 255)",
             },
         ],
