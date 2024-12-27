@@ -1,17 +1,18 @@
 function addItem(templateId: string, targetId: string): void {
   const templateElement = document.getElementById(
     templateId
-  ) as HTMLTemplateElement;
+  ) as HTMLTemplateElement | null;
   const targetElement = document.getElementById(targetId);
 
-  if (templateElement && targetElement) {
-    const template = templateElement.content.cloneNode(true);
-    targetElement.appendChild(template);
-  } else {
-    console.error(
-      `Element with ID "${templateId}" or "${targetId}" not found.`
-    );
+  if (!templateElement) {
+    throw new Error(`Template element with ID "${templateId}" not found.`);
   }
+  if (!targetElement) {
+    throw new Error(`Target element with ID "${targetId}" not found.`);
+  }
+
+  const template = templateElement.content.cloneNode(true);
+  targetElement.appendChild(template);
 }
 
 function removeItem(button: HTMLTableRowElement): void {

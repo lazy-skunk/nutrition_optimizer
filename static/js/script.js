@@ -11,13 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 function addItem(templateId, targetId) {
     const templateElement = document.getElementById(templateId);
     const targetElement = document.getElementById(targetId);
-    if (templateElement && targetElement) {
-        const template = templateElement.content.cloneNode(true);
-        targetElement.appendChild(template);
+    if (!templateElement) {
+        throw new Error(`Template element with ID "${templateId}" not found.`);
     }
-    else {
-        console.error(`Element with ID "${templateId}" or "${targetId}" not found.`);
+    if (!targetElement) {
+        throw new Error(`Target element with ID "${targetId}" not found.`);
     }
+    const template = templateElement.content.cloneNode(true);
+    targetElement.appendChild(template);
 }
 function removeItem(button) {
     var _a;
