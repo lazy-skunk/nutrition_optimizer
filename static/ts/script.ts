@@ -236,7 +236,7 @@ function drawPFCRatioWithTotalEnergy(
     "rgb(128, 128, 255)",
   ];
 
-  const data: PFCData[] = nutrientComponents.map((nutrient, index) => {
+  const pfcData: PFCData[] = nutrientComponents.map((nutrient, index) => {
     const capitalizedNutrient =
       nutrient.charAt(0).toUpperCase() + nutrient.slice(1);
     const grams = pfcEnergyTotalValues[nutrient];
@@ -266,7 +266,7 @@ function drawPFCRatioWithTotalEnergy(
       {
         name: "Percentage",
         colorByPoint: true,
-        data: data,
+        data: pfcData,
       },
     ] as unknown as Highcharts.SeriesOptions[],
   } as Highcharts.Options);

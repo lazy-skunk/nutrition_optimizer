@@ -134,7 +134,7 @@ function drawPFCRatioWithTotalEnergy(pfcRatio, pfcEnergyTotalValues) {
         "rgb(128, 255, 128)",
         "rgb(128, 128, 255)",
     ];
-    const data = nutrientComponents.map((nutrient, index) => {
+    const pfcData = nutrientComponents.map((nutrient, index) => {
         const capitalizedNutrient = nutrient.charAt(0).toUpperCase() + nutrient.slice(1);
         const grams = pfcEnergyTotalValues[nutrient];
         const ratio = pfcRatio[nutrient];
@@ -161,7 +161,7 @@ function drawPFCRatioWithTotalEnergy(pfcRatio, pfcEnergyTotalValues) {
             {
                 name: "Percentage",
                 colorByPoint: true,
-                data: data,
+                data: pfcData,
             },
         ],
     });
