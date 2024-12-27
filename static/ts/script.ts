@@ -318,16 +318,6 @@ interface Result {
   message: string;
 }
 
-function handleOptimizationResult(result: Result): void {
-  if (result.status === "Optimal") {
-    drawPFCRatioWithTotalEnergy(result.pfcRatio, result.pfcEnergyTotalValues);
-    drawFoodIntake(result.foodIntake);
-  } else {
-    clearCharts();
-    alert("status: " + result.status + "\n" + "message: " + result.message);
-  }
-}
-
 function clearCharts(): void {
   const foodIntakeChart = document.getElementById(
     "food-intake-chart"
@@ -345,6 +335,16 @@ function clearCharts(): void {
 
   foodIntakeChart.textContent = "";
   pfcRatioChart.textContent = "";
+}
+
+function handleOptimizationResult(result: Result): void {
+  if (result.status === "Optimal") {
+    drawPFCRatioWithTotalEnergy(result.pfcRatio, result.pfcEnergyTotalValues);
+    drawFoodIntake(result.foodIntake);
+  } else {
+    clearCharts();
+    alert("status: " + result.status + "\n" + "message: " + result.message);
+  }
 }
 
 async function submitForm(): Promise<void> {

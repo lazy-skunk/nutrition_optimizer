@@ -198,16 +198,6 @@ function drawFoodIntake(foodIntake) {
         ],
     });
 }
-function handleOptimizationResult(result) {
-    if (result.status === "Optimal") {
-        drawPFCRatioWithTotalEnergy(result.pfcRatio, result.pfcEnergyTotalValues);
-        drawFoodIntake(result.foodIntake);
-    }
-    else {
-        clearCharts();
-        alert("status: " + result.status + "\n" + "message: " + result.message);
-    }
-}
 function clearCharts() {
     const foodIntakeChart = document.getElementById("food-intake-chart");
     const pfcRatioChart = document.getElementById("pfc-ratio-chart");
@@ -219,6 +209,16 @@ function clearCharts() {
     }
     foodIntakeChart.textContent = "";
     pfcRatioChart.textContent = "";
+}
+function handleOptimizationResult(result) {
+    if (result.status === "Optimal") {
+        drawPFCRatioWithTotalEnergy(result.pfcRatio, result.pfcEnergyTotalValues);
+        drawFoodIntake(result.foodIntake);
+    }
+    else {
+        clearCharts();
+        alert("status: " + result.status + "\n" + "message: " + result.message);
+    }
 }
 function submitForm() {
     return __awaiter(this, void 0, void 0, function* () {
