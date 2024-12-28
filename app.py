@@ -39,13 +39,6 @@ def optimize() -> Response:
         )
         result = nutrition_optimizer.solve()
 
-        if result["status"] == "Optimal":
-            logger.info("Optimization completed successfully.")
-        else:
-            logger.warning(
-                f"Optimization failed with status: {result['status']}"
-            )
-
         parsed_result = Utilities.convert_keys_to_camel_case(result)
         return jsonify(parsed_result)
     except ValueError as e:
