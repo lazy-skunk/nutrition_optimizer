@@ -1,32 +1,10 @@
 import logging
-import os
-import shutil
 from logging import Logger, StreamHandler
 from logging.handlers import RotatingFileHandler
-from typing import Generator
 
 import pytest
 
 from src.singleton_logger import SingletonLogger
-
-
-def _set_environment_variables() -> None:
-    os.environ["LOG_LEVEL"] = "CRITICAL"
-    os.environ["LOG_PATH"] = "test_log/app.log"
-    os.environ["LOG_SIZE"] = str(1024 * 1024 * 99)
-    os.environ["LOG_BACKUP"] = "99"
-
-
-@pytest.fixture(scope="module", autouse=True)
-def setup_test_environment() -> Generator[None, None, None]:
-    _set_environment_variables()
-
-    os.makedirs("test_log", exist_ok=True)
-
-    yield
-
-    if os.path.exists("test_log"):
-        shutil.rmtree("test_log")
 
 
 def test_singleton_logger_instance() -> None:
@@ -95,7 +73,7 @@ def test_rotating_file_handler_settings() -> None:
 
     assert rotating_file_handler is not None
     assert rotating_file_handler.level == logging.CRITICAL
-    assert rotating_file_handler.baseFilename == "/app/test_log/app.log"
+    assert rotating_file_handler.baseFilename == "/app/tests/test_log/app.log"
     assert rotating_file_handler.maxBytes == 1024 * 1024 * 99
     assert rotating_file_handler.backupCount == 99
 
