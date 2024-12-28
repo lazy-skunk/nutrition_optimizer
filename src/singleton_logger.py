@@ -21,7 +21,7 @@ class SingletonLogger:
     def _add_stream_handler(
         cls, log_level: str | int, formatter: Formatter
     ) -> None:
-        if cls._logger is None:
+        if cls._logger is None:  # pragma: no cover
             raise RuntimeError("Logger has not been initialized.")
 
         stream_handler = StreamHandler()
@@ -34,7 +34,7 @@ class SingletonLogger:
     def _add_rotating_file_handler(
         cls, log_level: str | int, formatter: Formatter
     ) -> None:
-        if cls._logger is None:
+        if cls._logger is None:  # pragma: no cover
             raise RuntimeError("Logger has not been initialized.")
 
         log_path = os.getenv("LOG_PATH", _DEFAULT_LOG_PATH)
