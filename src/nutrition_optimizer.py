@@ -3,6 +3,7 @@ from pulp import LpMaximize, LpMinimize, LpProblem, LpStatus, LpVariable
 from src.constraint import Constraint
 from src.food_information import FoodInformation
 from src.objective import Objective
+from src.singleton_logger import SingletonLogger
 
 
 class NutritionOptimizer:
@@ -14,21 +15,23 @@ class NutritionOptimizer:
         objective: Objective,
         constraints: list[Constraint],
     ) -> None:
-        self.food_information: list[FoodInformation] = food_information
-        self.objective: Objective = objective
-        self.constraints: list[Constraint] = constraints
+        self._logger = SingletonLogger.get_logger()
 
-        self.food_intake_variables: dict[str, LpVariable] = {}
-        self.problem: LpProblem
+        self._food_information: list[FoodInformation] = food_information
+        self._objective: Objective = objective
+        self._constraints: list[Constraint] = constraints
 
-        self.total_energy: float = 0.0
-        self.total_protein: float = 0.0
-        self.total_fat: float = 0.0
-        self.total_carbohydrates: float = 0.0
+        self._food_intake_variables: dict[str, LpVariable] = {}
+        self._problem: LpProblem
+
+        self._total_energy: float = 0.0
+        self._total_protein: float = 0.0
+        self._total_fat: float = 0.0
+        self._total_carbohydrates: float = 0.0
 
     def _setup_food_intake_variables(self) -> None:
-        for food_infomation in self.food_information:
-            self.food_intake_variables[food_infomation.name] = LpVariable(
+        for food_infomation in self._food_information:
+            self._food_intake_variables[food_infomation.name] = LpVariable(
                 food_infomation.name,
                 lowBound=food_infomation.minimum_intake,
                 upBound=food_infomation.maximum_intake,
@@ -40,27 +43,27 @@ class NutritionOptimizer:
         return getattr(self, nutrient_attribute)
 
     def _setup_lp_problem(self) -> None:
-        objective_sense = self.objective.objective_sense
-        nutritional_component = self.objective.nutritional_component
+        objective_sense = self._objective.objective_sense
+        nutritional_component = self._objective.nutritional_component
 
         objective = LpMaximize if objective_sense == "maximize" else LpMinimize
         objective_name = f"{objective_sense}_{nutritional_component}"
 
-        self.problem = LpProblem(objective_name, objective)
+        self._problem = LpProblem(objective_name, objective)
 
         objective_target = self._get_nutrient_value(nutritional_component)
 
-        self.problem += objective_target, objective_name
+        self._problem += objective_target, objective_name
 
     def _setup_objective_variables(self) -> None:
-        for food_information in self.food_information:
+        for food_information in self._food_information:
             for nutrient in FoodInformation.NUTRIENT_COMPONENTS:
                 nutrient_value = getattr(food_information, nutrient)
 
                 total_value = (
                     nutrient_value
                     * food_information.grams_per_unit
-                    * self.food_intake_variables[food_information.name]
+                    * self._food_intake_variables[food_information.name]
                     / self._GRAM_CALCULATION_FACTOR
                 )
 
@@ -92,7 +95,7 @@ class NutritionOptimizer:
         }
         constraint_operation = constraint_operations[min_max]
 
-        self.problem += (
+        self._problem += (
             constraint_operation(nutrient_value, value),
             problem_name,
         )
@@ -114,13 +117,13 @@ class NutritionOptimizer:
 
         comparison_operations = {
             "max": lambda nutrient_energy: nutrient_energy
-            <= self.total_energy * calculation_factor_value,
+            <= self._total_energy * calculation_factor_value,
             "min": lambda nutrient_energy: nutrient_energy
-            >= self.total_energy * calculation_factor_value,
+            >= self._total_energy * calculation_factor_value,
         }
         comparison_operation = comparison_operations[min_max]
 
-        self.problem += (
+        self._problem += (
             comparison_operation(nutrient_energy),
             problem_name,
         )
@@ -151,7 +154,7 @@ class NutritionOptimizer:
             "energy": self._apply_amount_or_energy_constraint,
             "ratio": self._apply_ratio_constraint,
         }
-        for constraint in self.constraints:
+        for constraint in self._constraints:
             unit = constraint.unit
             apply_method = apply_methods[unit]
             apply_method(constraint)
@@ -160,17 +163,17 @@ class NutritionOptimizer:
         return sum(
             getattr(food_information, nutrient_property)
             * food_information.grams_per_unit
-            * self.food_intake_variables[food_name].varValue
+            * self._food_intake_variables[food_name].varValue
             / self._GRAM_CALCULATION_FACTOR
             for food_name, food_information in zip(
-                self.food_intake_variables.keys(), self.food_information
+                self._food_intake_variables.keys(), self._food_information
             )
         )
 
     def _calculate_food_intake(self) -> dict:
         food_intake = {
-            food_name: self.food_intake_variables[food_name].varValue
-            for food_name in self.food_intake_variables
+            food_name: self._food_intake_variables[food_name].varValue
+            for food_name in self._food_intake_variables
         }
         return food_intake
 
@@ -235,9 +238,9 @@ class NutritionOptimizer:
         self._setup_objective_variables()
         self._setup_lp_problem()
         self._setup_constraints()
-        self.problem.solve()
+        self._problem.solve()
 
-        solution_result = LpStatus[self.problem.status]
+        solution_result = LpStatus[self._problem.status]
         if solution_result == "Optimal":
             food_intake = self._calculate_food_intake()
             pfc_energy_total_values = self._calculate_total_nutrient_values()
