@@ -25,18 +25,34 @@ def index() -> str:
 @app.route("/optimize", methods=["POST"])
 def optimize() -> Response:
     try:
+        logger = SingletonLogger.get_logger()
         food_information, objective, constraints = (
             Utilities.parse_request_data(request)
         )
+
+        logger.debug(f"Parsed food information: {food_information}")
+        logger.debug(f"Parsed objective: {objective}")
+        logger.debug(f"Parsed constraints: {constraints}")
 
         nutrition_optimizer = NutritionOptimizer(
             food_information, objective, constraints
         )
         result = nutrition_optimizer.solve()
 
+        if result["status"] == "Optimal":
+            logger.info("Optimization completed successfully.")
+        else:
+            logger.warning(
+                f"Optimization failed with status: {result['status']}"
+            )
+
         parsed_result = Utilities.convert_keys_to_camel_case(result)
         return jsonify(parsed_result)
+    except ValueError as e:
+        logger.warning(f"Invalid request data: {str(e)}")
+        return jsonify({"status": "Error", "message": "Invalid request data"})
     except Exception as e:
+        logger.warning(f"Error during optimization: {str(e)}")
         return jsonify({"status": "Error", "message": str(e)})
 
 
