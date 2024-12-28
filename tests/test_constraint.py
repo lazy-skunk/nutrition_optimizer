@@ -8,13 +8,13 @@ from src.constraint import Constraint
 def test_valid_constraint() -> None:
     constraint = Constraint(
         min_max="min",
-        nutritional_component="protein",
+        nutrient="protein",
         unit="amount",
         value=10,
     )
 
     assert constraint.min_max == "min"
-    assert constraint.nutritional_component == "protein"
+    assert constraint.nutrient == "protein"
     assert constraint.unit == "amount"
     assert constraint.value == 10
 
@@ -29,7 +29,7 @@ def test_invalid_min_max() -> None:
     ):
         Constraint(
             min_max="invalid_min_max",
-            nutritional_component="protein",
+            nutrient="protein",
             unit="amount",
             value=10,
         )
@@ -39,14 +39,13 @@ def test_invalid_nutritional_component() -> None:
     with pytest.raises(
         ValueError,
         match=re.escape(
-            "Invalid nutritional component: invalid_component."
-            " Valid components are"
+            "Invalid nutrient: invalid_nutrient. Valid nutrients are"
             " ['energy', 'protein', 'fat', 'carbohydrates']."
         ),
     ):
         Constraint(
             min_max="min",
-            nutritional_component="invalid_component",
+            nutrient="invalid_nutrient",
             unit="amount",
             value=10,
         )
@@ -62,7 +61,7 @@ def test_invalid_unit() -> None:
     ):
         Constraint(
             min_max="min",
-            nutritional_component="protein",
+            nutrient="protein",
             unit="invalid_unit",
             value=10,
         )
@@ -74,7 +73,7 @@ def test_negative_value() -> None:
     ):
         Constraint(
             min_max="min",
-            nutritional_component="protein",
+            nutrient="protein",
             unit="amount",
             value=-1,
         )
@@ -83,7 +82,7 @@ def test_negative_value() -> None:
 def test_zero_value() -> None:
     constraint = Constraint(
         min_max="min",
-        nutritional_component="protein",
+        nutrient="protein",
         unit="amount",
         value=0,
     )

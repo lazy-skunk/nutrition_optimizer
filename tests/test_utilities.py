@@ -22,20 +22,20 @@ _FOOD_INFORMATION_DATA = [
 ]
 
 _OBJECTIVE_DATA = {
-    "objectiveSense": "maximize",
-    "nutritionalComponent": "energy",
+    "sense": "maximize",
+    "nutrient": "energy",
 }
 
 _CONSTRAINTS_DATA = [
     {
         "minMax": "max",
-        "nutritionalComponent": "energy",
+        "nutrient": "energy",
         "unit": "energy",
         "value": 1800,
     },
     {
         "minMax": "min",
-        "nutritionalComponent": "protein",
+        "nutrient": "protein",
         "unit": "amount",
         "value": 150,
     },

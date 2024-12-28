@@ -32,16 +32,16 @@ function updateUnitOptions(select) {
     if (!row) {
         throw new Error("Row element not found.");
     }
-    const nutritionalComponentSelect = row.querySelector("[name='constraint-nutritional-component']");
+    const nutrientSelect = row.querySelector("[name='constraint-nutrient']");
     const unitSelect = row.querySelector("[name='constraint-unit']");
-    if (!nutritionalComponentSelect) {
-        throw new Error("Nutritional component select element not found in row.");
+    if (!nutrientSelect) {
+        throw new Error("Nutrient select element not found in row.");
     }
     if (!unitSelect) {
         throw new Error("Unit select element not found in row.");
     }
     unitSelect.innerHTML = "";
-    if (nutritionalComponentSelect.textContent === "energy") {
+    if (nutrientSelect.value === "energy") {
         const energyTemplate = document.getElementById("unit-options-energy");
         if (!energyTemplate) {
             throw new Error("energyTemplate with ID 'unit-options-energy' not found.");
@@ -97,46 +97,43 @@ function getObjective() {
         throw new Error("Row element not found.");
     }
     const objectiveSenseInput = row.querySelector("[name='objective-sense']");
-    const nutritionalComponentInput = row.querySelector("[name='objective-nutritional-component']");
-    if (!objectiveSenseInput || !nutritionalComponentInput) {
+    const nutrientInput = row.querySelector("[name='objective-nutrient']");
+    if (!objectiveSenseInput || !nutrientInput) {
         throw new Error("Required input elements not found in the row.");
     }
     return {
-        objectiveSense: objectiveSenseInput.value,
-        nutritionalComponent: nutritionalComponentInput.value,
+        sense: objectiveSenseInput.value,
+        nutrient: nutrientInput.value,
     };
 }
 function getConstraints() {
     const rows = document.querySelectorAll("#constraint-inputs tr");
     return Array.from(rows).map((row) => {
         const minMaxInput = row.querySelector("[name='constraint-min-max']");
-        const nutritionalComponentInput = row.querySelector("[name='constraint-nutritional-component']");
+        const nutrientInput = row.querySelector("[name='constraint-nutrient']");
         const unitInput = row.querySelector("[name='constraint-unit']");
         const valueInput = row.querySelector("[name='constraint-value']");
-        if (!minMaxInput ||
-            !nutritionalComponentInput ||
-            !unitInput ||
-            !valueInput) {
+        if (!minMaxInput || !nutrientInput || !unitInput || !valueInput) {
             throw new Error("Required input elements not found in the row.");
         }
         return {
             minMax: minMaxInput.value,
-            nutritionalComponent: nutritionalComponentInput.value,
+            nutrient: nutrientInput.value,
             unit: unitInput.value,
             value: parseFloat(valueInput.value),
         };
     });
 }
-function drawPFCRatioWithTotalEnergy(pfcRatio, pfcEnergyTotalValues) {
-    const nutrientComponents = ["protein", "fat", "carbohydrates"];
+function drawPFCRatioWithTotalEnergy(pfcRatio, totalNutrientValues) {
+    const nutrients = ["protein", "fat", "carbohydrates"];
     const colors = [
         "rgb(255, 128, 128)",
         "rgb(128, 255, 128)",
         "rgb(128, 128, 255)",
     ];
-    const pfcData = nutrientComponents.map((nutrient, index) => {
+    const pfcData = nutrients.map((nutrient, index) => {
         const capitalizedNutrient = nutrient.charAt(0).toUpperCase() + nutrient.slice(1);
-        const grams = pfcEnergyTotalValues[nutrient];
+        const grams = totalNutrientValues[nutrient];
         const ratio = pfcRatio[nutrient];
         return {
             name: `${capitalizedNutrient} (${grams}g)`,
@@ -155,7 +152,7 @@ function drawPFCRatioWithTotalEnergy(pfcRatio, pfcEnergyTotalValues) {
             valueSuffix: "%",
         },
         subtitle: {
-            text: `Total Energy: ${pfcEnergyTotalValues.energy} kcal`,
+            text: `Total Energy: ${totalNutrientValues.energy} kcal`,
         },
         series: [
             {
@@ -166,20 +163,20 @@ function drawPFCRatioWithTotalEnergy(pfcRatio, pfcEnergyTotalValues) {
         ],
     });
 }
-function drawFoodIntake(foodIntake) {
-    const foodIntakeData = Object.keys(foodIntake).map((food) => ({
+function drawFoodintakes(foodintakes) {
+    const foodIntakesData = Object.keys(foodintakes).map((food) => ({
         name: food,
-        y: foodIntake[food],
+        y: foodintakes[food],
     }));
-    Highcharts.chart("food-intake-chart", {
+    Highcharts.chart("food-intakes-chart", {
         chart: {
             type: "bar",
         },
         title: {
-            text: "Food Intake",
+            text: "Food Intakes",
         },
         xAxis: {
-            categories: foodIntakeData.map((item) => item.name),
+            categories: foodIntakesData.map((item) => item.name),
             title: {
                 text: "Food Item",
             },
@@ -191,29 +188,29 @@ function drawFoodIntake(foodIntake) {
         },
         series: [
             {
-                name: "Food Intake",
-                data: foodIntakeData.map((item) => item.y),
+                name: "Food Intakes",
+                data: foodIntakesData.map((item) => item.y),
                 color: "rgb(128, 128, 255)",
             },
         ],
     });
 }
 function clearCharts() {
-    const foodIntakeChart = document.getElementById("food-intake-chart");
+    const foodIntakesChart = document.getElementById("food-intakes-chart");
     const pfcRatioChart = document.getElementById("pfc-ratio-chart");
-    if (!foodIntakeChart) {
+    if (!foodIntakesChart) {
         throw new Error("Food intake chart not found.");
     }
     if (!pfcRatioChart) {
         throw new Error("PFC ratio chart not found.");
     }
-    foodIntakeChart.textContent = "";
+    foodIntakesChart.textContent = "";
     pfcRatioChart.textContent = "";
 }
 function handleOptimizationResult(result) {
     if (result.status === "Optimal") {
-        drawPFCRatioWithTotalEnergy(result.pfcRatio, result.pfcEnergyTotalValues);
-        drawFoodIntake(result.foodIntake);
+        drawPFCRatioWithTotalEnergy(result.pfcRatio, result.totalNutrientValues);
+        drawFoodintakes(result.foodIntakes);
     }
     else {
         clearCharts();

@@ -16,20 +16,18 @@ _FOOD_INFORMATION = [
     ),
 ]
 
-_OBJECTIVE = Objective(
-    objective_sense="maximize", nutritional_component="energy"
-)
+_OBJECTIVE = Objective(sense="maximize", nutrient="energy")
 
 _CONSTRAINTS = [
     Constraint(
         min_max="max",
-        nutritional_component="energy",
+        nutrient="energy",
         unit="energy",
         value=200,
     ),
     Constraint(
         min_max="min",
-        nutritional_component="fat",
+        nutrient="fat",
         unit="ratio",
         value=20,
     ),
@@ -38,7 +36,7 @@ _CONSTRAINTS = [
 _INFEASIBLE_CONSTRAINTS = [
     Constraint(
         min_max="max",
-        nutritional_component="energy",
+        nutrient="energy",
         unit="energy",
         value=1,
     ),
@@ -50,12 +48,12 @@ def test_solve() -> None:
     result = optimizer.solve()
 
     assert result["status"] == "Optimal"
-    assert "food_intake" in result
-    assert "pfc_energy_total_values" in result
+    assert "food_intakes" in result
+    assert "total_nutrient_values" in result
     assert "pfc_ratio" in result
 
-    assert result["food_intake"]["boiled_egg"] == 2
-    assert result["pfc_energy_total_values"]["energy"] == 134
+    assert result["food_intakes"]["boiled_egg"] == 2
+    assert result["total_nutrient_values"]["energy"] == 134
 
 
 def test_infeasible() -> None:

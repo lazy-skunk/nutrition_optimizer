@@ -5,28 +5,24 @@ from src.food_information import FoodInformation
 
 @dataclass(frozen=True)
 class Objective:
-    objective_sense: str
-    nutritional_component: str
+    sense: str
+    nutrient: str
 
-    OBJECTIVE_SENSES = ["minimize", "maximize"]
+    SENSES = ["minimize", "maximize"]
 
     def __post_init__(self) -> None:
-        self._validate_problem_type()
-        self._validate_nutritional_component()
+        self._validate_sense()
+        self._validate_nutrient()
 
-    def _validate_problem_type(self) -> None:
-        if self.objective_sense not in self.OBJECTIVE_SENSES:
+    def _validate_sense(self) -> None:
+        if self.sense not in self.SENSES:
             raise ValueError(
-                f"Invalid objective sense: {self.objective_sense}."
-                f" Valid values are {self.OBJECTIVE_SENSES}."
+                f"Invalid sense: {self.sense}. Valid values are {self.SENSES}."
             )
 
-    def _validate_nutritional_component(self) -> None:
-        if (
-            self.nutritional_component
-            not in FoodInformation.NUTRIENT_COMPONENTS
-        ):
+    def _validate_nutrient(self) -> None:
+        if self.nutrient not in FoodInformation.NUTRIENTS:
             raise ValueError(
-                f"Invalid nutritional component: {self.nutritional_component}."
-                f" Valid components are {FoodInformation.NUTRIENT_COMPONENTS}."
+                f"Invalid nutrient: {self.nutrient}."
+                f" Valid nutrients are {FoodInformation.NUTRIENTS}."
             )

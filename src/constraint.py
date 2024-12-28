@@ -6,7 +6,7 @@ from src.food_information import FoodInformation
 @dataclass(frozen=True)
 class Constraint:
     min_max: str
-    nutritional_component: str
+    nutrient: str
     unit: str
     value: int
 
@@ -15,7 +15,7 @@ class Constraint:
 
     def __post_init__(self) -> None:
         self._validate_min_max()
-        self._validate_nutritional_component()
+        self._validate_nutrient()
         self._validate_unit()
         self._validate_value_is_non_negative()
 
@@ -26,14 +26,11 @@ class Constraint:
                 f" Valid values are {Constraint.MIN_MAX}."
             )
 
-    def _validate_nutritional_component(self) -> None:
-        if (
-            self.nutritional_component
-            not in FoodInformation.NUTRIENT_COMPONENTS
-        ):
+    def _validate_nutrient(self) -> None:
+        if self.nutrient not in FoodInformation.NUTRIENTS:
             raise ValueError(
-                f"Invalid nutritional component: {self.nutritional_component}."
-                f" Valid components are {FoodInformation.NUTRIENT_COMPONENTS}."
+                f"Invalid nutrient: {self.nutrient}."
+                f" Valid nutrients are {FoodInformation.NUTRIENTS}."
             )
 
     def _validate_unit(self) -> None:
