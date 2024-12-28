@@ -30,10 +30,6 @@ def optimize() -> Response:
             Utilities.parse_request_data(request)
         )
 
-        logger.debug(f"Parsed food information: {food_information}")
-        logger.debug(f"Parsed objective: {objective}")
-        logger.debug(f"Parsed constraints: {constraints}")
-
         nutrition_optimizer = NutritionOptimizer(
             food_information, objective, constraints
         )
