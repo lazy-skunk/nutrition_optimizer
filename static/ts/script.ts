@@ -1,4 +1,6 @@
-function addItem(templateId: string, targetId: string): void {
+import Highcharts from "highcharts";
+
+export function addItem(templateId: string, targetId: string): void {
   const templateElement = document.getElementById(
     templateId
   ) as HTMLTemplateElement | null;
@@ -15,7 +17,11 @@ function addItem(templateId: string, targetId: string): void {
   targetElement.appendChild(template);
 }
 
-function removeItem(button: HTMLButtonElement): void {
+export function removeItem(button: HTMLButtonElement): void {
+  if (!button) {
+    throw new Error("Button element not found.");
+  }
+
   const row = button.closest("tr");
 
   if (!row) {
