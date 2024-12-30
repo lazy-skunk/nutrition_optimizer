@@ -1,7 +1,7 @@
 import {
   addEventListenerToActionButton,
   appendTemplateToTable,
-  setNutrientSelectOnChange,
+  initializeNutrientSelectOnChange,
   optimize,
 } from "./script.js";
 
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     appendTemplateToTable("food-template", "food-inputs")
   );
 
-  setNutrientSelectOnChange();
+  initializeNutrientSelectOnChange();
 
   addEventListenerToActionButton("add-constraint", () =>
     appendTemplateToTable("constraint-template", "constraint-inputs")

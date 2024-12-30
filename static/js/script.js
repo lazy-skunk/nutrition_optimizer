@@ -7,20 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-function getElementByIdOrThrow(elementId) {
-    const element = document.getElementById(elementId);
-    if (!element) {
-        throw new Error(`Element with ID "${elementId}" not found.`);
-    }
-    return element;
-}
-export function getClosestTableRowElement(element) {
-    const row = element.closest("tr");
-    if (!row) {
-        throw new Error("Row element not found.");
-    }
-    return row;
-}
+import { getElementByIdOrThrow, getClosestTableRowElementOrThrow, getElementByQuerySelectorOrThrow, getElementsByQuerySelectorAllOrThrow, } from "./dom-utilities.js";
 function updateUnitOptionsWithTemplate(select, templateId) {
     const template = getElementByIdOrThrow(templateId);
     const clonedTemplate = template.content.cloneNode(true);
@@ -28,15 +15,9 @@ function updateUnitOptionsWithTemplate(select, templateId) {
     select.appendChild(clonedTemplate);
 }
 export function updateUnitOptions(select) {
-    const row = getClosestTableRowElement(select);
-    const nutrientSelect = row.querySelector("[name='constraint-nutrient']");
-    const unitSelect = row.querySelector("[name='constraint-unit']");
-    if (!nutrientSelect) {
-        throw new Error("Nutrient select element not found in row.");
-    }
-    if (!unitSelect) {
-        throw new Error("Unit select element not found in row.");
-    }
+    const row = getClosestTableRowElementOrThrow(select);
+    const nutrientSelect = getElementByQuerySelectorOrThrow(row, "[name='constraint-nutrient']");
+    const unitSelect = getElementByQuerySelectorOrThrow(row, "[name='constraint-unit']");
     if (nutrientSelect.value === "energy") {
         updateUnitOptionsWithTemplate(unitSelect, "unit-options-energy");
         unitSelect.disabled = true;
@@ -47,7 +28,7 @@ export function updateUnitOptions(select) {
     }
 }
 function removeRowFromTable(button) {
-    const row = getClosestTableRowElement(button);
+    const row = getClosestTableRowElementOrThrow(button);
     row.remove();
 }
 export function appendTemplateToTable(templateId, targetId) {
@@ -58,20 +39,14 @@ export function appendTemplateToTable(templateId, targetId) {
     if (nutrientSelect) {
         nutrientSelect.addEventListener("change", () => updateUnitOptions(nutrientSelect));
     }
-    const removeButton = clonedTemplate.querySelector("button");
-    if (!removeButton) {
-        throw new Error(`Button element not found in the template with ID "${templateId}".`);
-    }
+    const removeButton = getElementByQuerySelectorOrThrow(clonedTemplate, "button");
     removeButton.addEventListener("click", () => {
         removeRowFromTable(removeButton);
     });
     targetElement.appendChild(clonedTemplate);
 }
-export function setNutrientSelectOnChange() {
-    const nutrientSelect = document.querySelector("[name='constraint-nutrient']");
-    if (!nutrientSelect) {
-        throw new Error(`Select element with name "constraint-nutrient" not found.`);
-    }
+export function initializeNutrientSelectOnChange() {
+    const nutrientSelect = getElementByQuerySelectorOrThrow(document, "[name='constraint-nutrient']");
     nutrientSelect.addEventListener("change", () => {
         updateUnitOptions(nutrientSelect);
     });
@@ -81,26 +56,17 @@ export function addEventListenerToActionButton(buttonId, action) {
     button.addEventListener("click", action);
 }
 function getFoodInformation() {
-    const rows = document.querySelectorAll("#food-inputs tr");
+    const foodInput = getElementByIdOrThrow("food-inputs");
+    const rows = getElementsByQuerySelectorAllOrThrow(foodInput, "tr");
     return Array.from(rows).map((row) => {
-        const nameInput = row.querySelector("[name='food-name']");
-        const gramsPerUnitInput = row.querySelector("[name='food-grams-per-unit']");
-        const minimumIntakeInput = row.querySelector("[name='food-minimum-intake']");
-        const maximumIntakeInput = row.querySelector("[name='food-maximum-intake']");
-        const energyInput = row.querySelector("[name='food-energy']");
-        const proteinInput = row.querySelector("[name='food-protein']");
-        const fatInput = row.querySelector("[name='food-fat']");
-        const carbohydratesInput = row.querySelector("[name='food-carbohydrates']");
-        if (!nameInput ||
-            !gramsPerUnitInput ||
-            !minimumIntakeInput ||
-            !maximumIntakeInput ||
-            !energyInput ||
-            !proteinInput ||
-            !fatInput ||
-            !carbohydratesInput) {
-            throw new Error("One or more required input elements not found in the row.");
-        }
+        const nameInput = getElementByQuerySelectorOrThrow(row, "[name='food-name']");
+        const gramsPerUnitInput = getElementByQuerySelectorOrThrow(row, "[name='food-grams-per-unit']");
+        const minimumIntakeInput = getElementByQuerySelectorOrThrow(row, "[name='food-minimum-intake']");
+        const maximumIntakeInput = getElementByQuerySelectorOrThrow(row, "[name='food-maximum-intake']");
+        const energyInput = getElementByQuerySelectorOrThrow(row, "[name='food-energy']");
+        const proteinInput = getElementByQuerySelectorOrThrow(row, "[name='food-protein']");
+        const fatInput = getElementByQuerySelectorOrThrow(row, "[name='food-fat']");
+        const carbohydratesInput = getElementByQuerySelectorOrThrow(row, "[name='food-carbohydrates']");
         return {
             name: nameInput.value,
             gramsPerUnit: parseInt(gramsPerUnitInput.value),
@@ -114,30 +80,23 @@ function getFoodInformation() {
     });
 }
 function getObjective() {
-    const row = document.querySelector("#objective-inputs tr");
-    if (!row) {
-        throw new Error("Row element not found.");
-    }
-    const objectiveSenseInput = row.querySelector("[name='objective-sense']");
-    const nutrientInput = row.querySelector("[name='objective-nutrient']");
-    if (!objectiveSenseInput || !nutrientInput) {
-        throw new Error("Required input elements not found in the row.");
-    }
+    const objectiveInput = getElementByIdOrThrow("objective-input");
+    const row = getElementByQuerySelectorOrThrow(objectiveInput, "tr");
+    const SenseInput = getElementByQuerySelectorOrThrow(row, "[name='objective-sense']");
+    const nutrientInput = getElementByQuerySelectorOrThrow(row, "[name='objective-nutrient']");
     return {
-        sense: objectiveSenseInput.value,
+        sense: SenseInput.value,
         nutrient: nutrientInput.value,
     };
 }
 function getConstraints() {
-    const rows = document.querySelectorAll("#constraint-inputs tr");
+    const constraintInput = getElementByIdOrThrow("constraint-inputs");
+    const rows = getElementsByQuerySelectorAllOrThrow(constraintInput, "tr");
     return Array.from(rows).map((row) => {
-        const minMaxInput = row.querySelector("[name='constraint-min-max']");
-        const nutrientInput = row.querySelector("[name='constraint-nutrient']");
-        const unitInput = row.querySelector("[name='constraint-unit']");
-        const valueInput = row.querySelector("[name='constraint-value']");
-        if (!minMaxInput || !nutrientInput || !unitInput || !valueInput) {
-            throw new Error("Required input elements not found in the row.");
-        }
+        const minMaxInput = getElementByQuerySelectorOrThrow(row, "[name='constraint-min-max']");
+        const nutrientInput = getElementByQuerySelectorOrThrow(row, "[name='constraint-nutrient']");
+        const unitInput = getElementByQuerySelectorOrThrow(row, "[name='constraint-unit']");
+        const valueInput = getElementByQuerySelectorOrThrow(row, "[name='constraint-value']");
         return {
             minMax: minMaxInput.value,
             nutrient: nutrientInput.value,
