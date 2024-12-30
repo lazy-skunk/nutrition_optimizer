@@ -3,7 +3,7 @@ import {
   appendTemplateToTable,
   setNutrientSelectOnChange,
   optimize,
-} from "./script";
+} from "./script.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   addEventListenerToActionButton("add-food", () =>

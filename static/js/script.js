@@ -14,6 +14,13 @@ function getElementByIdOrThrow(elementId) {
     }
     return element;
 }
+export function getClosestTableRowElement(element) {
+    const row = element.closest("tr");
+    if (!row) {
+        throw new Error("Row element not found.");
+    }
+    return row;
+}
 function updateUnitOptionsWithTemplate(select, templateId) {
     const template = getElementByIdOrThrow(templateId);
     const clonedTemplate = template.content.cloneNode(true);
@@ -21,10 +28,7 @@ function updateUnitOptionsWithTemplate(select, templateId) {
     select.appendChild(clonedTemplate);
 }
 export function updateUnitOptions(select) {
-    const row = select.closest("tr");
-    if (!row) {
-        throw new Error("Row element not found.");
-    }
+    const row = getClosestTableRowElement(select);
     const nutrientSelect = row.querySelector("[name='constraint-nutrient']");
     const unitSelect = row.querySelector("[name='constraint-unit']");
     if (!nutrientSelect) {
@@ -43,10 +47,7 @@ export function updateUnitOptions(select) {
     }
 }
 function removeRowFromTable(button) {
-    const row = button.closest("tr");
-    if (!row) {
-        throw new Error("Row element not found.");
-    }
+    const row = getClosestTableRowElement(button);
     row.remove();
 }
 export function appendTemplateToTable(templateId, targetId) {

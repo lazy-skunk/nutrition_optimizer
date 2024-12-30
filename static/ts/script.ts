@@ -6,24 +6,29 @@ function getElementByIdOrThrow<T extends HTMLElement>(elementId: string): T {
   return element;
 }
 
+export function getClosestTableRowElement(
+  element: Element
+): HTMLTableRowElement {
+  const row = element.closest("tr");
+  if (!row) {
+    throw new Error("Row element not found.");
+  }
+  return row;
+}
+
 function updateUnitOptionsWithTemplate(
   select: HTMLSelectElement,
   templateId: string
 ): void {
   const template = getElementByIdOrThrow<HTMLTemplateElement>(templateId);
-
   const clonedTemplate = template.content.cloneNode(true);
 
   select.innerHTML = "";
-
   select.appendChild(clonedTemplate);
 }
 
 export function updateUnitOptions(select: HTMLSelectElement) {
-  const row = select.closest("tr");
-  if (!row) {
-    throw new Error("Row element not found.");
-  }
+  const row = getClosestTableRowElement(select);
 
   const nutrientSelect = row.querySelector(
     "[name='constraint-nutrient']"
@@ -48,10 +53,7 @@ export function updateUnitOptions(select: HTMLSelectElement) {
 }
 
 function removeRowFromTable(button: HTMLButtonElement): void {
-  const row = button.closest("tr");
-  if (!row) {
-    throw new Error("Row element not found.");
-  }
+  const row = getClosestTableRowElement(button);
 
   row.remove();
 }
