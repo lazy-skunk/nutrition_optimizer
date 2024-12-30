@@ -1,11 +1,16 @@
+function getElementByIdOrThrow<T extends HTMLElement>(elementId: string): T {
+  const element = document.getElementById(elementId) as T | null;
+  if (!element) {
+    throw new Error(`Element with ID "${elementId}" not found.`);
+  }
+  return element;
+}
+
 function updateUnitOptionsWithTemplate(
   select: HTMLSelectElement,
   templateId: string
 ): void {
-  const template = document.getElementById(templateId) as HTMLTemplateElement;
-  if (!template) {
-    throw new Error(`Template with ID '${templateId}' not found.`);
-  }
+  const template = getElementByIdOrThrow<HTMLTemplateElement>(templateId);
 
   const clonedTemplate = template.content.cloneNode(true);
 
@@ -43,10 +48,6 @@ export function updateUnitOptions(select: HTMLSelectElement) {
 }
 
 function removeRowFromTable(button: HTMLButtonElement): void {
-  // if (!button) {
-  //   throw new Error("Button element not found.");
-  // }
-
   const row = button.closest("tr");
   if (!row) {
     throw new Error("Row element not found.");
@@ -59,17 +60,9 @@ export function appendTemplateToTable(
   templateId: string,
   targetId: string
 ): void {
-  const templateElement = document.getElementById(
-    templateId
-  ) as HTMLTemplateElement;
-  const targetElement = document.getElementById(targetId);
-
-  if (!templateElement) {
-    throw new Error(`Template element with ID "${templateId}" not found.`);
-  }
-  if (!targetElement) {
-    throw new Error(`Target element with ID "${targetId}" not found.`);
-  }
+  const templateElement =
+    getElementByIdOrThrow<HTMLTemplateElement>(templateId);
+  const targetElement = getElementByIdOrThrow<HTMLTemplateElement>(targetId);
 
   const clonedTemplate = templateElement.content.cloneNode(
     true
@@ -118,12 +111,7 @@ export function addEventListenerToActionButton(
   buttonId: string,
   action: ButtonAction
 ): void {
-  const button = document.getElementById(buttonId);
-
-  if (!button) {
-    throw new Error(`Button element with ID "${buttonId}" not found.`);
-  }
-
+  const button = getElementByIdOrThrow<HTMLButtonElement>(buttonId);
   button.addEventListener("click", action);
 }
 
@@ -367,19 +355,9 @@ interface Result {
 }
 
 function clearCharts(): void {
-  const foodIntakesChart = document.getElementById(
-    "food-intakes-chart"
-  ) as HTMLElement | null;
-  const pfcRatioChart = document.getElementById(
-    "pfc-ratio-chart"
-  ) as HTMLElement | null;
-
-  if (!foodIntakesChart) {
-    throw new Error("Food intake chart not found.");
-  }
-  if (!pfcRatioChart) {
-    throw new Error("PFC ratio chart not found.");
-  }
+  const foodIntakesChart =
+    getElementByIdOrThrow<HTMLElement>("food-intakes-chart");
+  const pfcRatioChart = getElementByIdOrThrow<HTMLElement>("pfc-ratio-chart");
 
   foodIntakesChart.textContent = "";
   pfcRatioChart.textContent = "";

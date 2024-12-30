@@ -7,11 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-function updateUnitOptionsWithTemplate(select, templateId) {
-    const template = document.getElementById(templateId);
-    if (!template) {
-        throw new Error(`Template with ID '${templateId}' not found.`);
+function getElementByIdOrThrow(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) {
+        throw new Error(`Element with ID "${elementId}" not found.`);
     }
+    return element;
+}
+function updateUnitOptionsWithTemplate(select, templateId) {
+    const template = getElementByIdOrThrow(templateId);
     const clonedTemplate = template.content.cloneNode(true);
     select.innerHTML = "";
     select.appendChild(clonedTemplate);
@@ -39,9 +43,6 @@ export function updateUnitOptions(select) {
     }
 }
 function removeRowFromTable(button) {
-    // if (!button) {
-    //   throw new Error("Button element not found.");
-    // }
     const row = button.closest("tr");
     if (!row) {
         throw new Error("Row element not found.");
@@ -49,14 +50,8 @@ function removeRowFromTable(button) {
     row.remove();
 }
 export function appendTemplateToTable(templateId, targetId) {
-    const templateElement = document.getElementById(templateId);
-    const targetElement = document.getElementById(targetId);
-    if (!templateElement) {
-        throw new Error(`Template element with ID "${templateId}" not found.`);
-    }
-    if (!targetElement) {
-        throw new Error(`Target element with ID "${targetId}" not found.`);
-    }
+    const templateElement = getElementByIdOrThrow(templateId);
+    const targetElement = getElementByIdOrThrow(targetId);
     const clonedTemplate = templateElement.content.cloneNode(true);
     const nutrientSelect = clonedTemplate.querySelector("[name='constraint-nutrient']");
     if (nutrientSelect) {
@@ -81,10 +76,7 @@ export function setNutrientSelectOnChange() {
     });
 }
 export function addEventListenerToActionButton(buttonId, action) {
-    const button = document.getElementById(buttonId);
-    if (!button) {
-        throw new Error(`Button element with ID "${buttonId}" not found.`);
-    }
+    const button = getElementByIdOrThrow(buttonId);
     button.addEventListener("click", action);
 }
 function getFoodInformation() {
@@ -226,14 +218,8 @@ function drawFoodintakes(foodintakes) {
     });
 }
 function clearCharts() {
-    const foodIntakesChart = document.getElementById("food-intakes-chart");
-    const pfcRatioChart = document.getElementById("pfc-ratio-chart");
-    if (!foodIntakesChart) {
-        throw new Error("Food intake chart not found.");
-    }
-    if (!pfcRatioChart) {
-        throw new Error("PFC ratio chart not found.");
-    }
+    const foodIntakesChart = getElementByIdOrThrow("food-intakes-chart");
+    const pfcRatioChart = getElementByIdOrThrow("pfc-ratio-chart");
     foodIntakesChart.textContent = "";
     pfcRatioChart.textContent = "";
 }
