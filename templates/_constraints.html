@@ -18,11 +18,7 @@
         </select>
       </td>
       <td>
-        <select
-          class="form-select"
-          name="constraint-nutrient"
-          onchange="updateUnitOptions(this)"
-        >
+        <select class="form-select" name="constraint-nutrient">
           <option value="energy">Energy</option>
           <option value="protein">Protein</option>
           <option value="fat">Fat</option>
@@ -42,11 +38,7 @@
   </tbody>
 </table>
 
-<button
-  type="button"
-  class="btn btn-outline-primary"
-  onclick="addItem('constraint-template', 'constraint-inputs');"
->
+<button type="button" id="add-constraint" class="btn btn-outline-primary">
   Add Constraint
 </button>
 
@@ -59,11 +51,7 @@
       </select>
     </td>
     <td>
-      <select
-        class="form-select"
-        name="constraint-nutrient"
-        onchange="updateUnitOptions(this)"
-      >
+      <select class="form-select" name="constraint-nutrient">
         <option value="energy">Energy</option>
         <option value="protein">Protein</option>
         <option value="fat">Fat</option>
@@ -79,9 +67,7 @@
       <input type="number" class="form-control" name="constraint-value" />
     </td>
     <td>
-      <button class="btn btn-outline-danger" onclick="removeItem(this)">
-        Remove
-      </button>
+      <button class="btn btn-outline-danger">Remove</button>
     </td>
   </tr>
 </template>

@@ -1,37 +1,20 @@
-import Highcharts from "highcharts";
-
-export function addItem(templateId: string, targetId: string): void {
-  const templateElement = document.getElementById(
-    templateId
-  ) as HTMLTemplateElement | null;
-  const targetElement = document.getElementById(targetId);
-
-  if (!templateElement) {
-    throw new Error(`Template element with ID "${templateId}" not found.`);
-  }
-  if (!targetElement) {
-    throw new Error(`Target element with ID "${targetId}" not found.`);
+function updateUnitOptionsWithTemplate(
+  select: HTMLSelectElement,
+  templateId: string
+): void {
+  const template = document.getElementById(templateId) as HTMLTemplateElement;
+  if (!template) {
+    throw new Error(`Template with ID '${templateId}' not found.`);
   }
 
-  const template = templateElement.content.cloneNode(true);
-  targetElement.appendChild(template);
+  const clonedTemplate = template.content.cloneNode(true);
+
+  select.innerHTML = "";
+
+  select.appendChild(clonedTemplate);
 }
 
-export function removeItem(button: HTMLButtonElement): void {
-  if (!button) {
-    throw new Error("Button element not found.");
-  }
-
-  const row = button.closest("tr");
-
-  if (!row) {
-    throw new Error("Row element not found.");
-  }
-
-  row.remove();
-}
-
-function updateUnitOptions(select: HTMLSelectElement) {
+export function updateUnitOptions(select: HTMLSelectElement) {
   const row = select.closest("tr");
   if (!row) {
     throw new Error("Row element not found.");
@@ -50,35 +33,98 @@ function updateUnitOptions(select: HTMLSelectElement) {
     throw new Error("Unit select element not found in row.");
   }
 
-  unitSelect.innerHTML = "";
-
   if (nutrientSelect.value === "energy") {
-    const energyTemplate = document.getElementById(
-      "unit-options-energy"
-    ) as HTMLTemplateElement;
-
-    if (!energyTemplate) {
-      throw new Error(
-        "energyTemplate with ID 'unit-options-energy' not found."
-      );
-    }
-
-    unitSelect.appendChild(energyTemplate.content.cloneNode(true));
+    updateUnitOptionsWithTemplate(unitSelect, "unit-options-energy");
     unitSelect.disabled = true;
   } else {
     unitSelect.disabled = false;
-    const amountRatioTemplate = document.getElementById(
-      "unit-options-amount-ratio"
-    ) as HTMLTemplateElement;
-
-    if (!amountRatioTemplate) {
-      throw new Error(
-        "amountRatioTemplate with ID 'unit-options-amount-ratio' not found."
-      );
-    }
-
-    unitSelect.appendChild(amountRatioTemplate.content.cloneNode(true));
+    updateUnitOptionsWithTemplate(unitSelect, "unit-options-amount-ratio");
   }
+}
+
+function removeRowFromTable(button: HTMLButtonElement): void {
+  // if (!button) {
+  //   throw new Error("Button element not found.");
+  // }
+
+  const row = button.closest("tr");
+  if (!row) {
+    throw new Error("Row element not found.");
+  }
+
+  row.remove();
+}
+
+export function appendTemplateToTable(
+  templateId: string,
+  targetId: string
+): void {
+  const templateElement = document.getElementById(
+    templateId
+  ) as HTMLTemplateElement;
+  const targetElement = document.getElementById(targetId);
+
+  if (!templateElement) {
+    throw new Error(`Template element with ID "${templateId}" not found.`);
+  }
+  if (!targetElement) {
+    throw new Error(`Target element with ID "${targetId}" not found.`);
+  }
+
+  const clonedTemplate = templateElement.content.cloneNode(
+    true
+  ) as HTMLTemplateElement;
+
+  const nutrientSelect = clonedTemplate.querySelector(
+    "[name='constraint-nutrient']"
+  ) as HTMLSelectElement;
+  if (nutrientSelect) {
+    nutrientSelect.addEventListener("change", () =>
+      updateUnitOptions(nutrientSelect)
+    );
+  }
+
+  const removeButton = clonedTemplate.querySelector("button");
+  if (!removeButton) {
+    throw new Error(
+      `Button element not found in the template with ID "${templateId}".`
+    );
+  }
+  removeButton.addEventListener("click", () => {
+    removeRowFromTable(removeButton);
+  });
+
+  targetElement.appendChild(clonedTemplate);
+}
+
+export function setNutrientSelectOnChange(): void {
+  const nutrientSelect = document.querySelector(
+    "[name='constraint-nutrient']"
+  ) as HTMLSelectElement;
+  if (!nutrientSelect) {
+    throw new Error(
+      `Select element with name "constraint-nutrient" not found.`
+    );
+  }
+
+  nutrientSelect.addEventListener("change", () => {
+    updateUnitOptions(nutrientSelect);
+  });
+}
+
+type ButtonAction = () => void;
+
+export function addEventListenerToActionButton(
+  buttonId: string,
+  action: ButtonAction
+): void {
+  const button = document.getElementById(buttonId);
+
+  if (!button) {
+    throw new Error(`Button element with ID "${buttonId}" not found.`);
+  }
+
+  button.addEventListener("click", action);
 }
 
 interface FoodInformation {
@@ -306,6 +352,7 @@ function drawFoodintakes(foodintakes: FoodIntakes): void {
         name: "Food Intakes",
         data: foodIntakesData.map((item) => item.y),
         color: "rgb(128, 128, 255)",
+        type: "bar",
       },
     ],
   });
@@ -348,7 +395,7 @@ function handleOptimizationResult(result: Result): void {
   }
 }
 
-async function submitForm(): Promise<void> {
+export async function optimize(): Promise<void> {
   const foodInformation = getFoodInformation();
   const objective = getObjective();
   const constraints = getConstraints();

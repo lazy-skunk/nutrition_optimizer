@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,26 +7,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-function addItem(templateId, targetId) {
-    const templateElement = document.getElementById(templateId);
-    const targetElement = document.getElementById(targetId);
-    if (!templateElement) {
-        throw new Error(`Template element with ID "${templateId}" not found.`);
+function updateUnitOptionsWithTemplate(select, templateId) {
+    const template = document.getElementById(templateId);
+    if (!template) {
+        throw new Error(`Template with ID '${templateId}' not found.`);
     }
-    if (!targetElement) {
-        throw new Error(`Target element with ID "${targetId}" not found.`);
-    }
-    const template = templateElement.content.cloneNode(true);
-    targetElement.appendChild(template);
+    const clonedTemplate = template.content.cloneNode(true);
+    select.innerHTML = "";
+    select.appendChild(clonedTemplate);
 }
-function removeItem(button) {
-    const row = button.closest("tr");
-    if (!row) {
-        throw new Error("Row element not found.");
-    }
-    row.remove();
-}
-function updateUnitOptions(select) {
+export function updateUnitOptions(select) {
     const row = select.closest("tr");
     if (!row) {
         throw new Error("Row element not found.");
@@ -40,23 +29,63 @@ function updateUnitOptions(select) {
     if (!unitSelect) {
         throw new Error("Unit select element not found in row.");
     }
-    unitSelect.innerHTML = "";
     if (nutrientSelect.value === "energy") {
-        const energyTemplate = document.getElementById("unit-options-energy");
-        if (!energyTemplate) {
-            throw new Error("energyTemplate with ID 'unit-options-energy' not found.");
-        }
-        unitSelect.appendChild(energyTemplate.content.cloneNode(true));
+        updateUnitOptionsWithTemplate(unitSelect, "unit-options-energy");
         unitSelect.disabled = true;
     }
     else {
         unitSelect.disabled = false;
-        const amountRatioTemplate = document.getElementById("unit-options-amount-ratio");
-        if (!amountRatioTemplate) {
-            throw new Error("amountRatioTemplate with ID 'unit-options-amount-ratio' not found.");
-        }
-        unitSelect.appendChild(amountRatioTemplate.content.cloneNode(true));
+        updateUnitOptionsWithTemplate(unitSelect, "unit-options-amount-ratio");
     }
+}
+function removeRowFromTable(button) {
+    // if (!button) {
+    //   throw new Error("Button element not found.");
+    // }
+    const row = button.closest("tr");
+    if (!row) {
+        throw new Error("Row element not found.");
+    }
+    row.remove();
+}
+export function appendTemplateToTable(templateId, targetId) {
+    const templateElement = document.getElementById(templateId);
+    const targetElement = document.getElementById(targetId);
+    if (!templateElement) {
+        throw new Error(`Template element with ID "${templateId}" not found.`);
+    }
+    if (!targetElement) {
+        throw new Error(`Target element with ID "${targetId}" not found.`);
+    }
+    const clonedTemplate = templateElement.content.cloneNode(true);
+    const nutrientSelect = clonedTemplate.querySelector("[name='constraint-nutrient']");
+    if (nutrientSelect) {
+        nutrientSelect.addEventListener("change", () => updateUnitOptions(nutrientSelect));
+    }
+    const removeButton = clonedTemplate.querySelector("button");
+    if (!removeButton) {
+        throw new Error(`Button element not found in the template with ID "${templateId}".`);
+    }
+    removeButton.addEventListener("click", () => {
+        removeRowFromTable(removeButton);
+    });
+    targetElement.appendChild(clonedTemplate);
+}
+export function setNutrientSelectOnChange() {
+    const nutrientSelect = document.querySelector("[name='constraint-nutrient']");
+    if (!nutrientSelect) {
+        throw new Error(`Select element with name "constraint-nutrient" not found.`);
+    }
+    nutrientSelect.addEventListener("change", () => {
+        updateUnitOptions(nutrientSelect);
+    });
+}
+export function addEventListenerToActionButton(buttonId, action) {
+    const button = document.getElementById(buttonId);
+    if (!button) {
+        throw new Error(`Button element with ID "${buttonId}" not found.`);
+    }
+    button.addEventListener("click", action);
 }
 function getFoodInformation() {
     const rows = document.querySelectorAll("#food-inputs tr");
@@ -191,6 +220,7 @@ function drawFoodintakes(foodintakes) {
                 name: "Food Intakes",
                 data: foodIntakesData.map((item) => item.y),
                 color: "rgb(128, 128, 255)",
+                type: "bar",
             },
         ],
     });
@@ -217,7 +247,7 @@ function handleOptimizationResult(result) {
         alert("status: " + result.status + "\n" + "message: " + result.message);
     }
 }
-function submitForm() {
+export function optimize() {
     return __awaiter(this, void 0, void 0, function* () {
         const foodInformation = getFoodInformation();
         const objective = getObjective();
