@@ -1,4 +1,5 @@
-import { addEventListenerToActionButton, appendTemplateToTable, initializeNutrientSelectOnChange, optimize, } from "./script.js";
+import { appendTemplateToTable, initializeNutrientSelectOnChange, optimize, } from "./nutrition-optimizer.js";
+import { addEventListenerToActionButton } from "./dom-utilities.js";
 document.addEventListener("DOMContentLoaded", () => {
     addEventListenerToActionButton("add-food", () => appendTemplateToTable("food-template", "food-inputs"));
     initializeNutrientSelectOnChange();

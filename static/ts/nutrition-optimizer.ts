@@ -86,16 +86,6 @@ export function initializeNutrientSelectOnChange(): void {
   });
 }
 
-type ButtonAction = () => void;
-
-export function addEventListenerToActionButton(
-  buttonId: string,
-  action: ButtonAction
-): void {
-  const button = getElementByIdOrThrow<HTMLButtonElement>(buttonId);
-  button.addEventListener("click", action);
-}
-
 interface FoodInformation {
   name: string;
   gramsPerUnit: number;

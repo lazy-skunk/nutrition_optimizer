@@ -39,3 +39,13 @@ export function getElementsByQuerySelectorAllOrThrow(
   }
   return elements;
 }
+
+type ButtonCallback = () => void;
+
+export function addEventListenerToActionButton(
+  buttonId: string,
+  callbackFunction: ButtonCallback
+): void {
+  const button = getElementByIdOrThrow<HTMLButtonElement>(buttonId);
+  button.addEventListener("click", callbackFunction);
+}

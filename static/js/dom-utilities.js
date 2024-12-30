@@ -26,4 +26,8 @@ export function getElementsByQuerySelectorAllOrThrow(parent, selector) {
     }
     return elements;
 }
+export function addEventListenerToActionButton(buttonId, callbackFunction) {
+    const button = getElementByIdOrThrow(buttonId);
+    button.addEventListener("click", callbackFunction);
+}
 //# sourceMappingURL=dom-utilities.js.map

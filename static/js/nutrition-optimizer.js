@@ -51,10 +51,6 @@ export function initializeNutrientSelectOnChange() {
         updateUnitOptions(nutrientSelect);
     });
 }
-export function addEventListenerToActionButton(buttonId, action) {
-    const button = getElementByIdOrThrow(buttonId);
-    button.addEventListener("click", action);
-}
 function getFoodInformation() {
     const foodInput = getElementByIdOrThrow("food-inputs");
     const rows = getElementsByQuerySelectorAllOrThrow(foodInput, "tr");
@@ -211,4 +207,4 @@ export function optimize() {
         handleOptimizationResult(result);
     });
 }
-//# sourceMappingURL=script.js.map
+//# sourceMappingURL=nutrition-optimizer.js.map
