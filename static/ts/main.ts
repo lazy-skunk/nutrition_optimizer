@@ -2,7 +2,7 @@ import {
   appendTemplateToTable,
   initializeNutrientSelectOnChange,
   optimize,
-} from "./nutrition-optimizer.js";
+} from "./nutrition-optimizer";
 
 import { addEventListenerToActionButton } from "./dom-utilities.js";
 

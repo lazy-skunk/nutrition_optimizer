@@ -3,7 +3,7 @@ import {
   getClosestTableRowElementOrThrow,
   getElementByQuerySelectorOrThrow,
   getElementsByQuerySelectorAllOrThrow,
-} from "./dom-utilities.js";
+} from "./dom-utilities";
 
 function updateUnitOptionsWithTemplate(
   select: HTMLSelectElement,
