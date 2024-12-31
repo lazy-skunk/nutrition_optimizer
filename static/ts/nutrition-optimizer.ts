@@ -43,6 +43,25 @@ function removeRowFromTable(button: HTMLButtonElement): void {
   row.remove();
 }
 
+function addEventListenersToTemplate(template: HTMLTemplateElement): void {
+  const nutrientSelect = template.querySelector(
+    "[name='constraint-nutrient']"
+  ) as HTMLSelectElement;
+  if (nutrientSelect) {
+    nutrientSelect.addEventListener("change", () =>
+      updateUnitOptions(nutrientSelect)
+    );
+  }
+
+  const removeButton = getElementByQuerySelectorOrThrow<HTMLButtonElement>(
+    template,
+    "button"
+  );
+  removeButton.addEventListener("click", () =>
+    removeRowFromTable(removeButton)
+  );
+}
+
 export function appendTemplateToTable(
   templateId: string,
   targetId: string
@@ -54,23 +73,7 @@ export function appendTemplateToTable(
   const clonedTemplate = templateElement.content.cloneNode(
     true
   ) as HTMLTemplateElement;
-
-  const nutrientSelect = clonedTemplate.querySelector(
-    "[name='constraint-nutrient']"
-  ) as HTMLSelectElement;
-  if (nutrientSelect) {
-    nutrientSelect.addEventListener("change", () =>
-      updateUnitOptions(nutrientSelect)
-    );
-  }
-
-  const removeButton = getElementByQuerySelectorOrThrow<HTMLButtonElement>(
-    clonedTemplate,
-    "button"
-  );
-  removeButton.addEventListener("click", () => {
-    removeRowFromTable(removeButton);
-  });
+  addEventListenersToTemplate(clonedTemplate);
 
   targetElement.appendChild(clonedTemplate);
 }

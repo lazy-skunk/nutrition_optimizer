@@ -4,7 +4,7 @@ import {
   optimize,
 } from "./nutrition-optimizer";
 
-import { addEventListenerToActionButton } from "./dom-utilities.js";
+import { addEventListenerToActionButton } from "./dom-utilities";
 
 document.addEventListener("DOMContentLoaded", () => {
   addEventListenerToActionButton("add-food", () =>
