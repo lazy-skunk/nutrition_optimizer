@@ -6,6 +6,5 @@ data
 htmlcov
 log
 node_modules
-scripts
 *.map
 .coverage
