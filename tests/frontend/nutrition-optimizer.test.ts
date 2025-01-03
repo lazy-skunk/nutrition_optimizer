@@ -345,10 +345,14 @@ describe("Nutrition Optimizer", () => {
   });
 
   describe("optimize", () => {
+    let originalAlert: typeof alert;
     let originalFetch: typeof fetch;
 
     beforeEach(() => {
+      originalAlert = global.alert;
       originalFetch = global.fetch;
+
+      global.alert = jest.fn();
       global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 
       document.body.innerHTML = `
@@ -440,13 +444,17 @@ describe("Nutrition Optimizer", () => {
     });
 
     afterEach(() => {
+      global.alert = originalAlert;
       global.fetch = originalFetch;
+
       jest.clearAllMocks();
+      jest.restoreAllMocks();
     });
 
     test("should update charts with optimization result when status is 'Optimal'", async () => {
       // Arrange
       (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
         json: () =>
           Promise.resolve({
             status: "Optimal",
@@ -477,17 +485,16 @@ describe("Nutrition Optimizer", () => {
       expect(pfcRatioChart.innerHTML).not.toBe("");
     });
 
-    test("bbb", async () => {
+    test("should handle infeasible optimization result and display an alert", async () => {
       // Arrange
       (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
         json: () =>
           Promise.resolve({
             status: "Infeasible",
             message: "test message",
           }),
       } as never);
-
-      global.alert = jest.fn();
 
       // Act
       await optimize();
@@ -506,6 +513,20 @@ describe("Nutrition Optimizer", () => {
       expect(global.alert).toHaveBeenCalledWith(
         "status: Infeasible\nmessage: test message"
       );
+    });
+
+    test("should display an alert with status 500 message on HTTP error response", async () => {
+      // Arrange
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+      } as never);
+
+      // Act
+      await optimize();
+
+      // Assert
+      expect(global.alert).toHaveBeenCalledWith("Response status: 500");
     });
   });
 });

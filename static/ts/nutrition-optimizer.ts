@@ -350,21 +350,31 @@ function handleOptimizationResult(result: Result): void {
 }
 
 export async function optimize(): Promise<void> {
-  const foodInformation = getFoodInformation();
-  const objective = getObjective();
-  const constraints = getConstraints();
+  try {
+    const foodInformation = getFoodInformation();
+    const objective = getObjective();
+    const constraints = getConstraints();
 
-  const response = await fetch("/optimize", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      foodInformation,
-      objective,
-      constraints,
-    }),
-  });
+    const response = await fetch("/optimize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        foodInformation,
+        objective,
+        constraints,
+      }),
+    });
 
-  const result = await response.json();
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
 
-  handleOptimizationResult(result);
+    const result = await response.json();
+
+    handleOptimizationResult(result);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      alert(error.message);
+    }
+  }
 }
