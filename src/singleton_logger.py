@@ -13,25 +13,32 @@ class SingletonLogger:
     _logger: Logger | None = None
 
     @classmethod
-    def initialize(cls) -> None:
+    def get_logger(cls) -> Logger:
+        cls._initialize()
+
+        if cls._logger is None:
+            raise RuntimeError("Logger has not been initialized.")
+
+        return cls._logger
+
+    @classmethod
+    def _initialize(cls) -> None:
         if cls._logger is None:
             cls._logger = logging.getLogger("nutrition_optimizer")
 
             log_level = cls._get_log_level()
             cls._logger.setLevel(log_level)
 
+            log_path = os.getenv("LOG_PATH", _DEFAULT_LOG_PATH)
+            log_dir = os.path.dirname(log_path)
+            if log_dir:
+                os.makedirs(log_dir, exist_ok=True)
+
             formatter = Formatter(
                 "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
             )
             cls._add_stream_handler(log_level, formatter)
             cls._add_rotating_file_handler(log_level, formatter)
-
-    @classmethod
-    def get_logger(cls) -> Logger:
-        if cls._logger is None:
-            raise RuntimeError("Logger has not been initialized.")
-
-        return cls._logger
 
     @classmethod
     def _get_log_level(cls) -> str | int:

@@ -8,7 +8,6 @@ from src.utilities import Utilities
 
 def create_app() -> Flask:
     load_dotenv()
-    SingletonLogger.initialize()
 
     app = Flask(__name__)
     return app

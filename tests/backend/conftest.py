@@ -5,8 +5,6 @@ from unittest import mock
 
 import pytest
 
-from src.singleton_logger import SingletonLogger
-
 _LOG_DIR = os.path.join("tests", "test_log")
 _LOG_FILE = "app.log"
 _LOG_PATH = os.path.join(_LOG_DIR, _LOG_FILE)
@@ -41,10 +39,8 @@ def initialize_test_logger() -> Generator[None, None, None]:
     _create_log_directory(_LOG_DIR)
 
     with mock.patch.dict(os.environ, {"LOG_PATH": _LOG_PATH}):
-        SingletonLogger.initialize()
-
-    try:
-        yield
-    finally:
-        _remove_log_directory(_LOG_DIR)
-        _reset_environment_variables()
+        try:
+            yield
+        finally:
+            _remove_log_directory(_LOG_DIR)
+            _reset_environment_variables()
